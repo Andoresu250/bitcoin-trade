@@ -1,0 +1,3 @@
+class InvestorSerializer < ProfileSerializer
+  
+end

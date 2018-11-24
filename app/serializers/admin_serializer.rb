@@ -1,0 +1,3 @@
+class AdminSerializer < ProfileSerializer
+  
+end

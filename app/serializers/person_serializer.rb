@@ -1,0 +1,3 @@
+class PersonSerializer < ProfileSerializer
+  
+end
