@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_17_152320) do
+ActiveRecord::Schema.define(version: 2018_11_24_160809) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,6 +30,22 @@ ActiveRecord::Schema.define(version: 2018_11_17_152320) do
     t.datetime "updated_at", null: false
     t.index ["title"], name: "index_blogs_on_title"
     t.index ["user_id"], name: "index_blogs_on_user_id"
+  end
+
+  create_table "countries", force: :cascade do |t|
+    t.string "name"
+    t.string "code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "document_types", force: :cascade do |t|
+    t.string "name"
+    t.string "abbreviation"
+    t.bigint "country_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["country_id"], name: "index_document_types_on_country_id"
   end
 
   create_table "tokens", force: :cascade do |t|
@@ -54,4 +70,5 @@ ActiveRecord::Schema.define(version: 2018_11_17_152320) do
   end
 
   add_foreign_key "blogs", "users"
+  add_foreign_key "document_types", "countries"
 end

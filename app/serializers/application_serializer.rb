@@ -4,4 +4,9 @@ class ApplicationSerializer < ActiveModel::Serializer
   def id
       object.hashid
   end
+  
+  def index?
+    return scope == "index"
+  end
+  
 end

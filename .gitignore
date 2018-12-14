@@ -30,4 +30,4 @@
 /config/application.yml
 
 # Ignore temp uploads
-/public/uploads/*
+/public/uploads/

@@ -3,6 +3,7 @@ class ApplicationRecord < ActiveRecord::Base
     
     include Filterable
     include Hashid::Rails
+    include ActiveRecord::AttributeAssignmentOverride
     
     def self.filters
         []
