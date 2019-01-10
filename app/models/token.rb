@@ -5,7 +5,7 @@ class Token < ApplicationRecord
   before_create :generate_token
 
   def is_valid?
-    DateTime.now < self.expires_at
+    DateTime.now < self.expires_at && self.user.activated?
   end
 
   private

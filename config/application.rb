@@ -13,8 +13,8 @@ module BitcoinWorld
     config.assets.initialize_on_precompile = false
     config.time_zone = 'Bogota'
     config.active_record.default_timezone = :local
-    config.i18n.available_locales = [:es, :en]
-    config.i18n.default_locale = :en
+    config.i18n.available_locales = ["en", "es", "es-AR", "es-CL", "es-CO", "es-CR", "es-EC", "es-ES", "es-MX", "es-NI", "es-PA", "es-PE", "es-US", "es-VE"]
+    config.i18n.default_locale = "es-CO"
     config.autoload_paths += %W["#{config.root}/app/validators/"]
     config.autoload_paths += %W("#{config.root}/lib")
     config.middleware.insert_before 0, Rack::Cors do

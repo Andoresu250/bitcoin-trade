@@ -13,4 +13,9 @@ class Country < ApplicationRecord
         self.name = self.name.titleize if self.name.present?
     end
     
+    def self.by_locale(locale)
+        country = Country.find_by(locale: locale)
+        return country.nil? ? Country.first : country
+    end
+    
 end

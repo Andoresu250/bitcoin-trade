@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
     
     include ActionController::Serialization
     protect_from_forgery with: :null_session
+    around_action :with_time_zone
     
     def renderJson(type, opts = {})
         case type
@@ -31,6 +32,12 @@ class ApplicationController < ActionController::Base
         json[root.to_s.camelize(:lower)] = ActiveModelSerializers::SerializableResource.new(collection, each_serializer: serializer)
         json["totalCount"] = collection.count
         render json: json, status: :ok
+    end
+    
+    def with_time_zone
+        locale = params[:locale] || I18n.locale
+        @time_zone_country = Country.by_locale(locale)
+        Time.use_zone(@time_zone_country.time_zone) { yield }
     end
     
     def camelize(hash)
