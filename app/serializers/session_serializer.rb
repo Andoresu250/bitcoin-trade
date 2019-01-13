@@ -1,5 +1,5 @@
 class SessionSerializer < ApplicationSerializer
-  attributes :email, :profile_type, :token, :profile
+  attributes :email, :profile_type, :token, :profile, :state
   
   def profile
     case object.profile_type

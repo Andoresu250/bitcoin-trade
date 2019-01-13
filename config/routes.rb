@@ -8,7 +8,12 @@ Rails.application.routes.draw do
         match 'sessions/check'               => 'sessions#check',         via: :get
         match 'users/asd'               => 'users#asd',         via: :get
         
-        resources :users
+        resources :users do
+            member do
+                put :deactivate
+                put :activate
+            end
+        end
         match 'users/create_person' => 'users#create_person', via: :post
         
         resources :countries, only: [:index, :show, :create, :update, :destroy]

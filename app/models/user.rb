@@ -6,7 +6,7 @@ class User < ApplicationRecord
     
     has_many :tokens
     
-    belongs_to :profile, polymorphic: true, optional: true
+    belongs_to :profile, polymorphic: true, optional: true, dependent: :destroy
     
     attr_accessor :password, :password_confirmation, :token
     
@@ -61,6 +61,18 @@ class User < ApplicationRecord
         else
             return nil
         end
+    end
+    
+    def is_admin?
+        self.role_to_number >= 5
+    end
+    
+    def is_investor?
+        self.role_to_number >= 2
+    end
+    
+    def is_person?
+        self.role_to_number == 1
     end
     
 end

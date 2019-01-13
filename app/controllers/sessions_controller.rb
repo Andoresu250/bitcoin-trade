@@ -7,6 +7,7 @@ class SessionsController < ApplicationController
         pass = session_params[:password]
         user = login(email, pass)
         if user
+            return renderJson(:unauthorized, {error: "Su cuenta esta desactivada"}) unless user.activated?
             token = Token.create(user: user)
             user.token = token.token
             return render json: ActiveModelSerializers::SerializableResource.new(user, each_serializer: SessionSerializer), status: :created

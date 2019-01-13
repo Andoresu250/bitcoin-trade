@@ -7,5 +7,13 @@ class Person < ApplicationRecord
   mount_uploader :identification_back, ImageUploader
   mount_uploader :public_receipt, ImageUploader
   
-  validates :first_names, :last_names, :identification, :phone, :identification_front, :identification_back, presence: true
+  # validates :first_names, :last_names, :identification, :phone, :identification_front, :identification_back, presence: true
+  validates :first_names, :last_names, :identification, :phone, presence: true
+  validates :first_names, :last_names, :identification, :phone, presence: true
+  validates :identification, uniqueness: { scope: :document_type_id }
+  
+  def full_name
+    "#{self.first_names} #{self.last_names}"
+  end
 end
+

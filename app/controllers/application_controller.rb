@@ -75,15 +75,15 @@ class ApplicationController < ActionController::Base
     end
     
     def is_admin?
-        @user.role_to_number >= 5 ? @user : renderJson(:unauthorized)
+        @user.is_admin? ? @user : renderJson(:unauthorized)
     end
     
     def is_investor?
-        @user.role_to_number >= 2 ? @user : renderJson(:unauthorized)
+        @user.is_investor? ? @user : renderJson(:unauthorized)
     end
     
     def is_person?
-        @user.role_to_number == 1 ? @user : renderJson(:unauthorized)
+        @user.is_person? ? @user : renderJson(:unauthorized)
     end
     
 end

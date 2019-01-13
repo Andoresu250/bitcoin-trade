@@ -1,5 +1,5 @@
 class MyUserSerializer < ApplicationSerializer
-  attributes :email, :profile_type, :profile
+  attributes :email, :profile_type, :profile, :state
   
   def profile
     case object.profile_type

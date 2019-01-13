@@ -1,5 +1,5 @@
 class ApplicationSerializer < ActiveModel::Serializer
-  attributes :id
+  attributes :id, :created_at, :updated_at
   
   def id
       object.hashid

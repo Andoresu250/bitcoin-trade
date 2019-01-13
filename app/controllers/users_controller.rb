@@ -2,7 +2,7 @@ class UsersController < ApplicationController
 
   before_action :verify_token, except: [:create_person]
   before_action :is_admin?, only: [:index, :create, :destroy]
-  before_action :set_user, only: [:show, :update, :destroy]
+  before_action :set_user, only: [:show, :update, :activate, :deactivate, :destroy]
   before_action :verify_user, only: [:show, :update, :destroy]
   
   def asd
@@ -68,6 +68,28 @@ class UsersController < ApplicationController
       return render json: ActiveModelSerializers::SerializableResource.new(@this_user, each_serializer: MyUserSerializer), status: :ok
     else
       return renderJson(:unprocessable, {error: @this_user.errors.messages})
+    end
+  end
+  
+  def activate
+    if @this_user.may_activate?
+      @this_user.activate!
+      @this_user.tokens.delete
+      # send email
+      renderJson(:created, { notice: 'La cuenta ha sido activada exitosamente.' })
+    else
+      renderJson(:unprocessable, {error: 'Esta cuenta ya esta activada.'})
+    end
+  end
+  
+  def deactivate
+    if @this_user.may_deactivate?
+      @this_user.deactivate!
+      @this_user.tokens.delete
+      # send email
+      renderJson(:created, { notice: 'La cuenta ha sido desactivada exitosamente.' })
+    else
+      renderJson(:unprocessable, {error: 'Esta cuenta ya esta desactivada.'})
     end
   end
   

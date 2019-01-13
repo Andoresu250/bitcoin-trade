@@ -1,6 +1,6 @@
 class BankAccountsController < ApplicationController
   
-  before_action :verify_token, only: [:create, :update, :destroy]
+  before_action :verify_token
   before_action :set_bank_account, only: [:show, :update, :destroy]
   before_action :verify_user, only: [:show, :update, :delete]
 
@@ -45,7 +45,7 @@ class BankAccountsController < ApplicationController
     end
     
     def bank_account_params
-      params.require(:bank_account).permit(:bank, :number, :identification, :document_type_id, :identification_front, :identification_back, :account_certificate, :person_id)
+      params.require(:bank_account).permit(:bank, :number, :owner_name, :identification, :document_type_id, :identification_front, :identification_back, :account_certificate, :person_id)
     end
     
     def verify_user
