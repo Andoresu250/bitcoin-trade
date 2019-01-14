@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_13_174609) do
+ActiveRecord::Schema.define(version: 2019_01_14_025604) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,6 +48,16 @@ ActiveRecord::Schema.define(version: 2019_01_13_174609) do
     t.index ["user_id"], name: "index_blogs_on_user_id"
   end
 
+  create_table "charges", force: :cascade do |t|
+    t.bigint "person_id"
+    t.decimal "amount"
+    t.string "state", default: "pendiente"
+    t.string "evidence"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["person_id"], name: "index_charges_on_person_id"
+  end
+
   create_table "countries", force: :cascade do |t|
     t.string "name"
     t.string "code"
@@ -55,6 +65,8 @@ ActiveRecord::Schema.define(version: 2019_01_13_174609) do
     t.datetime "updated_at", null: false
     t.string "locale"
     t.string "time_zone"
+    t.string "money_code", default: "COP"
+    t.string "symbol", default: "$"
   end
 
   create_table "document_types", force: :cascade do |t|
@@ -78,6 +90,7 @@ ActiveRecord::Schema.define(version: 2019_01_13_174609) do
     t.string "public_receipt"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "balance", default: "0.0"
     t.index ["country_id"], name: "index_people_on_country_id"
     t.index ["document_type_id"], name: "index_people_on_document_type_id"
   end
@@ -106,6 +119,7 @@ ActiveRecord::Schema.define(version: 2019_01_13_174609) do
   add_foreign_key "bank_accounts", "document_types"
   add_foreign_key "bank_accounts", "people"
   add_foreign_key "blogs", "users"
+  add_foreign_key "charges", "people"
   add_foreign_key "document_types", "countries"
   add_foreign_key "people", "countries"
   add_foreign_key "people", "document_types"

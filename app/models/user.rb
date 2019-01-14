@@ -4,7 +4,7 @@ class User < ApplicationRecord
     
     authenticates_with_sorcery!
     
-    has_many :tokens
+    has_many :tokens, dependent: :destroy
     
     belongs_to :profile, polymorphic: true, optional: true, dependent: :destroy
     
@@ -17,6 +17,8 @@ class User < ApplicationRecord
     scope :by_created_start_date, -> (date) { where("users.created_at >= ?", date) } 
     scope :by_created_end_date,   -> (date) { where("users.created_at <= ?", date) } 
     scope :by_created_date,       -> (date) { parse_date = DateTime.parse(date); where(users: {created_at: parse_date.midnight..parse_date.end_of_day})}
+    
+    scope :by_admins, -> { where("users.profile_type = 'Admin'") }
     
     validates :profile, presence: true, on: :deep_create
     validates :email, presence: true

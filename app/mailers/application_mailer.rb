@@ -1,10 +1,10 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: 'from@example.com'
+  default from: 'no-reply@bitcoinworldesp.com'
   layout 'mailer'
   
-  @@logo_white = 'http://i.imgur.com/LwOI4G9.png'
-  @@logo_black = 'http://i.imgur.com/YNJFdYsg.png'
-  @@bitcoin_email = 'http://i.imgur.com/5yL4ASLg.jpg'
+  @@logo_white = 'https://i.imgur.com/WQC2Vol.png'
+  @@logo_black = 'https://i.imgur.com/McY7KbF.png'
+  @@bitcoin_email = 'https://i.imgur.com/rxUFWx8.jpg'
   
   @@url = 'https://bitcoinworldesp.es'
 end

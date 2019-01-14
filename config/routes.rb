@@ -1,12 +1,12 @@
 Rails.application.routes.draw do
   
   
+  
     scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/ , defaults: {format: :json} do
       
         resources :sessions, only: [:create]
         match 'sessions/logout'              => 'sessions#destroy',       via: :delete
         match 'sessions/check'               => 'sessions#check',         via: :get
-        match 'users/asd'               => 'users#asd',         via: :get
         
         resources :users do
             member do
@@ -20,6 +20,12 @@ Rails.application.routes.draw do
         resources :blogs
         resources :document_types
         resources :bank_accounts
+        resources :charges do
+            member do
+                put :approve
+                put :deny
+            end
+        end
         
     end
   

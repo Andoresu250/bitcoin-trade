@@ -1,7 +1,11 @@
 class Person < ApplicationRecord
+  
+  has_one :user, as: :profile, dependent: :destroy
+  
   belongs_to :document_type
   belongs_to :country
   has_many :bank_accounts, dependent: :destroy
+  has_many :charges, dependent: :destroy
   
   mount_uploader :identification_front, ImageUploader
   mount_uploader :identification_back, ImageUploader

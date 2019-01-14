@@ -4,7 +4,8 @@ class Country < ApplicationRecord
     
     accepts_nested_attributes_for :document_types, allow_destroy: true
     
-    validates :name, :code, presence: true, uniqueness: true
+    validates :name, :code, :money_code, :symbol, presence: true
+    validates :name, :code, uniqueness: true
     validates :code, numericality: { only_integer: true }
     
     before_validation :format_attributes
@@ -16,6 +17,10 @@ class Country < ApplicationRecord
     def self.by_locale(locale)
         country = Country.find_by(locale: locale)
         return country.nil? ? Country.first : country
+    end
+    
+    def unit
+        "#{self.money_code}#{self.symbol}"
     end
     
 end

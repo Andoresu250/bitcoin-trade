@@ -4,11 +4,6 @@ class UsersController < ApplicationController
   before_action :is_admin?, only: [:index, :create, :destroy]
   before_action :set_user, only: [:show, :update, :activate, :deactivate, :destroy]
   before_action :verify_user, only: [:show, :update, :destroy]
-  
-  def asd
-    puts I18n.locale
-    return renderJson(:ok, {time: Time.current})
-  end
 
   def index
     users = User.filter(params)
