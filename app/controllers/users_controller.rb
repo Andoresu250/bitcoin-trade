@@ -43,8 +43,7 @@ class UsersController < ApplicationController
     user = User.new(user_params)   
     user.profile_type = "Person"
     profile = Person.new(person_params)
-    user.country = @time_zone_country unless user.country_id.present?
-    puts user.country.id
+    profile.country = @time_zone_country unless profile.country_id.present?
     unless profile.nil?
       return renderJson(:unprocessable, {error: {profile: profile.errors.messages}}) unless profile.save
     end
