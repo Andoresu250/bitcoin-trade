@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  
+  include ActionView::Helpers::NumberHelper
 
   before_action :verify_token, except: [:create_person]
   before_action :is_admin?, only: [:index, :create, :destroy]
@@ -96,6 +98,15 @@ class UsersController < ApplicationController
     else
       return renderJson(:unprocessable, {error: "El usuario no pudo ser borrado"})
     end
+  end
+  
+  def balance
+    if @user.profile_type == "Person"
+      money = number_to_currency(@user.profile.balance, precision: 2, unit: @user.profile.country.unit)
+    else
+      money = nil
+    end
+    return renderJson(:ok, {balance: money})
   end
 
   private

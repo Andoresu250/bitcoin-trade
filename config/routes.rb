@@ -15,6 +15,7 @@ Rails.application.routes.draw do
             end
         end
         match 'users/create_person' => 'users#create_person', via: :post
+        match 'users/person/balance' => 'users#balance', via: :get
         
         resources :countries, only: [:index, :show, :create, :update, :destroy]
         resources :blogs
