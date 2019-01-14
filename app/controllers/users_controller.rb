@@ -43,12 +43,15 @@ class UsersController < ApplicationController
     user = User.new(user_params)   
     user.profile_type = "Person"
     profile = Person.new(person_params)
+    user.country = @time_zone_country unless user.country_id.present?
+    puts user.country.id
     unless profile.nil?
       return renderJson(:unprocessable, {error: {profile: profile.errors.messages}}) unless profile.save
     end
     user.profile = profile
     user.deactivate
     if user.save
+      WelcomeMailer.new_user(user).deliver
       return renderJson(:created, {notice: "Usuario creado exitosamente, te llegara una confirmacion cuando la cuenta sea validada"})
     else
       profile.destroy unless profile.nil?
@@ -74,8 +77,7 @@ class UsersController < ApplicationController
   def activate
     if @this_user.may_activate?
       @this_user.activate!
-      @this_user.tokens.delete
-      # send email
+      WelcomeMailer.activate_user(@this_user).deliver
       renderJson(:created, { notice: 'La cuenta ha sido activada exitosamente.' })
     else
       renderJson(:unprocessable, {error: 'Esta cuenta ya esta activada.'})
@@ -86,7 +88,7 @@ class UsersController < ApplicationController
     if @this_user.may_deactivate?
       @this_user.deactivate!
       @this_user.tokens.delete
-      # send email
+      WelcomeMailer.deactivate_user(@this_user).deliver
       renderJson(:created, { notice: 'La cuenta ha sido desactivada exitosamente.' })
     else
       renderJson(:unprocessable, {error: 'Esta cuenta ya esta desactivada.'})
@@ -94,8 +96,12 @@ class UsersController < ApplicationController
   end
   
   def destroy
-    @this_user.destroy
-    return renderJson(:no_content)
+    if @this_user.destroy
+      WelcomeMailer.delete_user(@this_user).deliver
+      return renderJson(:no_content)
+    else
+      return renderJson(:unprocessable, {error: "El usuario no pudo ser borrado"})
+    end
   end
 
   private

@@ -1,7 +1,7 @@
 class Person < ApplicationRecord
   belongs_to :document_type
   belongs_to :country
-  has_many :bank_accounts
+  has_many :bank_accounts, dependent: :destroy
   
   mount_uploader :identification_front, ImageUploader
   mount_uploader :identification_back, ImageUploader

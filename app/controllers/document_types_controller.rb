@@ -4,7 +4,7 @@ class DocumentTypesController < ApplicationController
   before_action :set_document_type, only: [:show, :update, :destroy]
 
   def index
-    document_types = DocumentType.filter(params)
+    document_types = params[:by_country_id].present? ? DocumentType.filter(params) : @time_zone_country.document_types.filter(params)
     return render json: document_types, scope: "index", status: :ok
   end
   
