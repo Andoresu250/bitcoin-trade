@@ -33,6 +33,7 @@ gem 'fog-aws'
 gem 'will_paginate', '~> 3.1.0'
 gem 'aasm', '~> 5.0.0'
 gem 'carrierwave', '~> 1.0'
+gem 'rest-client'
 # mini magick need this package
 # sudo apt-get install libmagickwand-dev
 # sudo apt-get update

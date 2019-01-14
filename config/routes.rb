@@ -28,6 +28,8 @@ Rails.application.routes.draw do
             end
         end
         
+        resources :calculators, only: [:create]
+        
     end
   
 end

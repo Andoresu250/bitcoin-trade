@@ -23,9 +23,10 @@ class CountriesController < ApplicationController
   end
 
   def update
-    country.assign_attributes(country_params)
-    if country.save
-      return render json: country, status: :ok    
+    @country.assign_attributes(country_params)
+    
+    if @country.save
+      return render json: @country, status: :ok    
     else
       return renderJson(:unprocessable, {error: country.errors.messages})
     end
