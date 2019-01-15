@@ -6,6 +6,7 @@ class Person < ApplicationRecord
   belongs_to :country
   has_many :bank_accounts, dependent: :destroy
   has_many :charges, dependent: :destroy
+  has_many :sales
   
   mount_uploader :identification_front, ImageUploader
   mount_uploader :identification_back, ImageUploader
@@ -15,6 +16,7 @@ class Person < ApplicationRecord
   validates :first_names, :last_names, :identification, :phone, presence: true
   validates :first_names, :last_names, :identification, :phone, presence: true
   validates :identification, uniqueness: { scope: :document_type_id }
+  validates_numericality_of :balance, greater_than: 0
   
   def full_name
     "#{self.first_names} #{self.last_names}"

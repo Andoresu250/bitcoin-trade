@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  person: one
+  btc: 9.99
+  value: 9.99
+  country: one
+  state: MyString
+  wallet_url: MyString
+
+two:
+  person: two
+  btc: 9.99
+  value: 9.99
+  country: two
+  state: MyString
+  wallet_url: MyString

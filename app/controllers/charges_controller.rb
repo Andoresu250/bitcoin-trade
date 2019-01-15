@@ -3,7 +3,7 @@ class ChargesController < ApplicationController
   include ActionView::Helpers::NumberHelper
 
   before_action :verify_token
-  before_action :set_charge, only: [:show, :destroy, :approve, :deny, :denied]
+  before_action :set_charge, only: [:show, :destroy, :approve, :deny]
   before_action :verify_user, only: [:show, :delete]
   before_action :is_admin?, only: [:approve, :deny]
 

@@ -23,4 +23,5 @@ class Charge < ApplicationRecord
             transitions  from: :pendiente, to: :denegado
         end
     end
+    
 end
