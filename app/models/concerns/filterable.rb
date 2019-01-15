@@ -11,6 +11,7 @@ module Filterable
       dir      = ApplicationRecord.validate_value(params[:sort], ApplicationRecord.DEFAULT_DIR)
       
       order_by = "#{table_name}.#{order_by}" unless order_by.include?('.')
+      order_by = order_by.underscore
       
       return order("#{order_by} #{dir}").paginate(page: page, per_page: per_page)
     end
