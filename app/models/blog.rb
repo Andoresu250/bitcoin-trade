@@ -4,7 +4,8 @@ class Blog < ApplicationRecord
     
     belongs_to :user
   
-    validates :title, :body, :image, presence: true
+    # validates :title, :body, :image, presence: true
+    validates :title, :body, presence: true
     
     scope :by_title, -> (title) { where("LOWER(blogs.title) LIKE ?", "%#{title.downcase}%") }
     scope :by_created_start_date, -> (date) { where("blogs.created_at >= ?", date) } 
