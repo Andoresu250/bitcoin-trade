@@ -14,7 +14,6 @@ class Person < ApplicationRecord
   
   # validates :first_names, :last_names, :identification, :phone, :identification_front, :identification_back, presence: true
   validates :first_names, :last_names, :identification, :phone, presence: true
-  validates :first_names, :last_names, :identification, :phone, presence: true
   validates :identification, uniqueness: { scope: :document_type_id }
   validates_numericality_of :balance, greater_than_or_equal_to: 0
   
