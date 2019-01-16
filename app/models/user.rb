@@ -10,15 +10,16 @@ class User < ApplicationRecord
     
     attr_accessor :password, :password_confirmation, :token
     
-    scope :by_profile_type,     -> (type) { joins("LEFT JOIN people ON (users.profile_id = people.id AND users.profile_type = 'Person')").where("users.profile_type = :type OR people.profile_type = :type", {type: type}) }
+    scope :by_profile_type,     -> (type) { joins("LEFT JOIN people ON (users.profile_id = people.id AND users.profile_type = 'Person')").where("users.profile_type = :type", {type: type}) }
     scope :by_email,            -> (email) { where("LOWER(users.email) LIKE ?", email.downcase ) }
-    scope :by_state,            -> (state) { where("users.state LIKE ?", "%#{state}%")}
+    scope :by_state,            -> (state) { where("users.state LIKE ?", "#{state}")}
     
     scope :by_created_start_date, -> (date) { where("users.created_at >= ?", date) } 
     scope :by_created_end_date,   -> (date) { where("users.created_at <= ?", date) } 
     scope :by_created_date,       -> (date) { parse_date = DateTime.parse(date); where(users: {created_at: parse_date.midnight..parse_date.end_of_day})}
     
-    scope :by_admins, -> { where("users.profile_type = 'Admin'") }
+    scope :by_admins,       -> (foo = {}) { where("users.profile_type = 'Admin'") }
+    scope :by_not_admins,   -> (foo = {}) { where("users.profile_type != 'Admin'") }
     
     validates :profile, presence: true, on: :deep_create
     validates :email, presence: true
@@ -39,6 +40,19 @@ class User < ApplicationRecord
         event  :deactivate do
             transitions  from: :activated, to: :deactivated
         end
+    end
+    
+    def self.filters
+        [
+            :by_profile_type,
+            :by_email,
+            :by_state,
+            :by_created_start_date,
+            :by_created_end_date,
+            :by_created_date,
+            :by_admins,
+            :by_not_admins
+        ]
     end
     
     def format_attributes

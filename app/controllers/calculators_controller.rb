@@ -11,9 +11,13 @@ class CalculatorsController < ApplicationController
   private
   
   def calculator_params
-    attribues = params.require(:calculator).permit(:btc, :value)
-    attribues[:currency] = @country.money_code
-    attribues[:symbol] = @country.symbol
+    attribues = params.require(:calculator).permit(:btc, :value, :currency)
+    if attribues[:currency].present?
+      attribues[:symbol] = "$"
+    else
+      attribues[:currency] = @country.money_code
+      attribues[:symbol] = @country.symbol
+    end
     return attribues
   end
   

@@ -7,7 +7,15 @@ class Sale < ApplicationRecord
   
   mount_uploader :evidence, ImageUploader
   
+  scope :by_state, -> (state) { where("sales.state LIKE ?", "#{state}")}
+  
   validates :value, :btc, :wallet_url, presence: true
+  
+  def self.filters
+        [
+            :by_state
+        ]
+    end
   
   aasm(:state) do
     state :pendiente, initial: true

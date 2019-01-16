@@ -9,11 +9,11 @@ class ChargesController < ApplicationController
 
   def index
     charges = @user.is_person? ? @user.profile.charges.filter(params) : Charge.filter(params)
-    return renderCollection("charges", charges, ChargeSerializer)
+    return renderCollection("charges", charges, ChargeSerializer, ['person.document_type', 'country'])
   end
   
   def show
-    return render json: @charge, status: :ok
+    return render json: @charge, status: :ok, include: ['person.document_type', 'country']
   end
   
   def create
@@ -84,9 +84,12 @@ class ChargesController < ApplicationController
     def set_charge
       return renderJson(:not_found) unless @charge = Charge.find_by_hashid(params[:id])
     end
-
-    # Never trust parameters from the scary internet, only allow the white list through.
+    
     def charge_params
       params.require(:charge).permit(:amount, :evidence)
+    end
+    
+    def verify_user
+      return renderJson(:unauthorized) if not ((@user.profile_type == "Person" && @user.profile_id == @charge.person_id) || (@user.is_admin?))
     end
 end

@@ -27,9 +27,9 @@ class ApplicationController < ActionController::Base
         end
     end
     
-    def renderCollection(root, collection, serializer)
+    def renderCollection(root, collection, serializer, include=nil)
         json = {}
-        json[root.to_s.camelize(:lower)] = ActiveModelSerializers::SerializableResource.new(collection, each_serializer: serializer)
+        json[root.to_s.camelize(:lower)] = ActiveModelSerializers::SerializableResource.new(collection, each_serializer: serializer, include: include)
         json["totalCount"] = collection.count
         render json: json, status: :ok
     end

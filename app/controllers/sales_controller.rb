@@ -9,11 +9,11 @@ class SalesController < ApplicationController
 
   def index
     sales = @user.is_person? ? @user.profile.sales.filter(params) : Sale.filter(params)
-    return renderCollection("sales", sales, SaleSerializer)
+    return renderCollection("sales", sales, SaleSerializer, ['person.document_type', 'country'])
   end
   
   def show
-    return render json: @sale, status: :ok
+    return render json: @sale, status: :ok, include: ['person.document_type', 'country']
   end
 
   def create
@@ -44,7 +44,7 @@ class SalesController < ApplicationController
 
   def approve
     if @sale.may_approve?
-      @sale.approve
+      # @sale.approve
       @sale.assign_attributes(sale_params)
       if @sale.save
         user = @sale.person.user      

@@ -7,16 +7,24 @@ class Charge < ApplicationRecord
     belongs_to :person
     has_one :country, through: :person
     
+    scope :by_state, -> (state) { where("charges.state LIKE ?", "#{state}")}
+    
     # validates :amount, :state, :evidence, presence: true
     validates :amount, :state, presence: true
     
+    def self.filters
+        [
+            :by_state
+        ]
+    end
+    
     aasm(:state) do
         state :pendiente, initial: true
-        state :aprovado
+        state :aprobado
         state :denegado
     
         event  :approve do
-            transitions  from: :pendiente, to: :aprovado
+            transitions  from: :pendiente, to: :aprobado
         end
         
         event :deny do
