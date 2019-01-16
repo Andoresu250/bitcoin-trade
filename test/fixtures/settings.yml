@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  last_trade_price: 9.99
+  purchase_percentage: 9.99
+  sale_percentage: 9.99
+  hour_volume: 9.99
+  active_traders: 1
+
+two:
+  last_trade_price: 9.99
+  purchase_percentage: 9.99
+  sale_percentage: 9.99
+  hour_volume: 9.99
+  active_traders: 1

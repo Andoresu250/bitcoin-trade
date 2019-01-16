@@ -44,7 +44,7 @@ class SalesController < ApplicationController
 
   def approve
     if @sale.may_approve?
-      # @sale.approve
+      @sale.approve
       @sale.assign_attributes(sale_params)
       if @sale.save
         user = @sale.person.user      

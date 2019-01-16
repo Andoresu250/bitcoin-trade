@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Last trade price:</strong>
+  <%= @setting.last_trade_price %>
+</p>
+
+<p>
+  <strong>Purchase percentage:</strong>
+  <%= @setting.purchase_percentage %>
+</p>
+
+<p>
+  <strong>Sale percentage:</strong>
+  <%= @setting.sale_percentage %>
+</p>
+
+<p>
+  <strong>Hour volume:</strong>
+  <%= @setting.hour_volume %>
+</p>
+
+<p>
+  <strong>Active traders:</strong>
+  <%= @setting.active_traders %>
+</p>
+
+<%= link_to 'Edit', edit_setting_path(@setting) %> |
+<%= link_to 'Back', settings_path %>
