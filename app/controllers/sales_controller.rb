@@ -83,7 +83,8 @@ class SalesController < ApplicationController
 
 
     def sale_params
-      params.require(:sale).permit(:value, :wallet_url, :evidence)
+      # params.require(:sale).permit(:value, :wallet_url, :evidence)
+      params.require(:sale).permit(:value, :wallet_url)
     end
 end
   
