@@ -6,9 +6,8 @@ class CreatePurchases < ActiveRecord::Migration[5.2]
       t.decimal :value
       t.references :country, foreign_key: true
       t.string :state, default: "pendiente"
-      t.references :bank_account, foreign_key: true
-      t.string :transfer_evidence
-      t.string :deposit_evidence
+      t.string :wallet_url
+      t.string :evidence
 
       t.timestamps
     end

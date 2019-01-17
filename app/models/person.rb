@@ -7,6 +7,7 @@ class Person < ApplicationRecord
   has_many :bank_accounts, dependent: :destroy
   has_many :charges, dependent: :destroy
   has_many :sales
+  has_many :purchases
   
   mount_uploader :identification_front, ImageUploader
   mount_uploader :identification_back, ImageUploader

@@ -36,6 +36,12 @@ Rails.application.routes.draw do
                 put :deny
             end
         end
+        resources :purchases do
+            member do
+                put :approve
+                put :deny
+            end
+        end
         resources :settings, only: [:index, :create]
         
     end

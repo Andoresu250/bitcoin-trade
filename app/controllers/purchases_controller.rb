@@ -1,74 +1,90 @@
 class PurchasesController < ApplicationController
-  before_action :set_purchase, only: [:show, :edit, :update, :destroy]
 
-  # GET /purchases
-  # GET /purchases.json
+  include ActionView::Helpers::NumberHelper
+
+  before_action :verify_token
+  before_action :set_purchase, only: [:show, :destroy, :approve, :deny]
+  before_action :verify_user, only: [:show, :delete]
+  before_action :is_admin?, only: [:approve, :deny]
+
   def index
-    @purchases = Purchase.all
+    purchases = @user.is_person? ? @user.profile.purchases.filter(params) : Purchase.filter(params)
+    return renderCollection("purchases", purchases, PurchaseSerializer, ['person.document_type', 'country'])
   end
-
-  # GET /purchases/1
-  # GET /purchases/1.json
+  
   def show
+    return render json: @purchase, status: :ok, include: ['person.document_type', 'country']
   end
 
-  # GET /purchases/new
-  def new
-    @purchase = Purchase.new
-  end
-
-  # GET /purchases/1/edit
-  def edit
-  end
-
-  # POST /purchases
-  # POST /purchases.json
   def create
-    @purchase = Purchase.new(purchase_params)
+    return renderJson(:unauthorized) unless @user.profile_type == "Person"
+    purchase = Purchase.new(purchase_params)    
+    person = @user.profile
+    purchase.person = person
+    purchase.country = person.country
+    purchase.set_btc
+    if purchase.valid?
+      person.balance -= purchase.value
+      return renderJson(:unprocessable, {error: 'No tienes el saldo suficiente para esta compra'}) unless person.save
+    end
+    if purchase.save
+      money = number_to_currency(purchase.value, unit: purchase.country.unit)
+      btc = purchase.btc
+      msg = "El usuario #{@user.full_name} ha realizado una compra por #{btc}"
+      sbj = "Nueva compra de #{@user.full_name}"
+      User.by_admins.each {|admin| NotificationMailer.simple_notification(admin, msg, sbj).deliver }
+      msg = "Hola #{@user.full_name}, gracias por confiar en nosotros has una compra de #{btc} bitcoins por valor de #{money}, validaremos tu dinero tan pronto como sea posible, y si todo esta en orden aprobaremos tu compra y se te sera transferido la cantidad de btc aquirido a tu billetera"
+      sbj = "Nueva Compra"
+      NotificationMailer.simple_notification(@user, msg, sbj).deliver
+      return render json: purchase, status: :created
+    else
+      return renderJson(:unprocessable, {error: purchase.errors.messages})
+    end
+  end
 
-    respond_to do |format|
+  def approve
+    if @purchase.may_approve?
+      @purchase.approve
+      @purchase.assign_attributes(purchase_params)
       if @purchase.save
-        format.html { redirect_to @purchase, notice: 'Purchase was successfully created.' }
-        format.json { render :show, status: :created, location: @purchase }
-      else
-        format.html { render :new }
-        format.json { render json: @purchase.errors, status: :unprocessable_entity }
+        user = @purchase.person.user      
+        money = number_to_currency(@purchase.value, unit: @purchase.country.unit)
+        msg = "Hola #{user.full_name}, gracias por confiar en nosotros tu compra de #{@purchase.btc} bitcoins por valor #{money} de ha sido aprobada exitosamente, revisa tu billetera y valida que todo este en orden."
+        sbj = "Compra exitosa"
+        NotificationMailer.simple_notification(user, msg, sbj).deliver
+        return renderJson(:created, { notice: 'La Compra fue aprobada exitosamente' })
       end
     end
+    return renderJson(:unprocessable, {error: 'La compra no se pudo aprobar'})
   end
 
-  # PATCH/PUT /purchases/1
-  # PATCH/PUT /purchases/1.json
-  def update
-    respond_to do |format|
-      if @purchase.update(purchase_params)
-        format.html { redirect_to @purchase, notice: 'Purchase was successfully updated.' }
-        format.json { render :show, status: :ok, location: @purchase }
-      else
-        format.html { render :edit }
-        format.json { render json: @purchase.errors, status: :unprocessable_entity }
-      end
+  def deny
+    if @purchase.may_deny?
+      @purchase.deny!
+      person = @purchase.person
+      person.balance += @purchase.value
+      user = person.user
+      money = number_to_currency(@purchase.value, unit: @purchase.country.unit)
+      msg = "Hola #{user.full_name}, gracias por confiar en nosotros tu compra de #{@purchase.btc} bitcoins por valor #{money} de ha sido rechazada, hemos regresado tu saldo, lamentamos las molestias"
+      sbj = "Compra fallida"
+      NotificationMailer.simple_notification(user, msg, sbj).deliver
+      return renderJson(:created, { notice: 'La compra fue rechazada exitosamente' }) if person.save
     end
+    return renderJson(:unprocessable, {error: 'La compra no se pudo rechazar'})
   end
-
-  # DELETE /purchases/1
-  # DELETE /purchases/1.json
-  def destroy
-    @purchase.destroy
-    respond_to do |format|
-      format.html { redirect_to purchases_url, notice: 'Purchase was successfully destroyed.' }
-      format.json { head :no_content }
-    end
-  end
+  
+  # TODO: add evidence
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+
     def set_purchase
-      @purchase = Purchase.find(params[:id])
+      return renderJson(:not_found) unless @purchase = Purchase.find_by_hashid(params[:id])
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
+
     def purchase_params
-      params.require(:purchase).permit(:person_id, :btc, :value, :country_id, :state, :bank_account_id, :transfer_evidence, :deposit_evidence)
+      # params.require(:purchase).permit(:value, :wallet_url, :evidence)
+      params.require(:purchase).permit(:value, :wallet_url)
     end
 end
+  

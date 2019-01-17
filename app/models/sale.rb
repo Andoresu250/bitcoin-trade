@@ -4,18 +4,23 @@ class Sale < ApplicationRecord
   
   belongs_to :person
   belongs_to :country
+  belongs_to :bank_account
   
   mount_uploader :evidence, ImageUploader
+  mount_uploader :deposit_evidence, ImageUploader
   
   scope :by_state, -> (state) { where("sales.state LIKE ?", "#{state}")}
   
-  validates :value, :btc, :wallet_url, presence: true
+  # validates :btc, :value, :evidence, presence: true
+  validates :btc, :value, presence: true
+  
+  validates :deposit_evidence, presence: true, on: :
   
   def self.filters
-        [
-            :by_state
-        ]
-    end
+    [
+      :by_state
+    ]
+  end
   
   aasm(:state) do
     state :pendiente, initial: true
@@ -31,16 +36,16 @@ class Sale < ApplicationRecord
     end
   end
   
-  def set_btc
-    attributes = {
-      value: self.value
-    }
-    if self.country.present?
-      attributes[:currency] = self.country.money_code
-      attributes[:symbol] = self.country.symbol
-    end
-    calculator = Calculator.new(attributes)
-    self.btc = calculator.btc
+  def set_value
+    # attributes = {
+    #   value: self.value
+    # }
+    # if self.country.present?
+    #   attributes[:currency] = self.country.money_code
+    #   attributes[:symbol] = self.country.symbol
+    # end
+    # calculator = Calculator.new(attributes)
+    # self.btc = calculator.btc
   end
   
 end

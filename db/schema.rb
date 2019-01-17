@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_16_231740) do
+ActiveRecord::Schema.define(version: 2019_01_16_234829) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -95,16 +95,32 @@ ActiveRecord::Schema.define(version: 2019_01_16_231740) do
     t.index ["document_type_id"], name: "index_people_on_document_type_id"
   end
 
+  create_table "purchases", force: :cascade do |t|
+    t.bigint "person_id"
+    t.decimal "btc"
+    t.decimal "value"
+    t.bigint "country_id"
+    t.string "state", default: "pendiente"
+    t.string "wallet_url"
+    t.string "evidence"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["country_id"], name: "index_purchases_on_country_id"
+    t.index ["person_id"], name: "index_purchases_on_person_id"
+  end
+
   create_table "sales", force: :cascade do |t|
     t.bigint "person_id"
     t.decimal "btc"
     t.decimal "value"
     t.bigint "country_id"
-    t.string "state"
-    t.string "wallet_url"
-    t.string "evidence"
+    t.string "state", default: "pendiente"
+    t.bigint "bank_account_id"
+    t.string "transfer_evidence"
+    t.string "deposit_evidence"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["bank_account_id"], name: "index_sales_on_bank_account_id"
     t.index ["country_id"], name: "index_sales_on_country_id"
     t.index ["person_id"], name: "index_sales_on_person_id"
   end
@@ -147,6 +163,9 @@ ActiveRecord::Schema.define(version: 2019_01_16_231740) do
   add_foreign_key "document_types", "countries"
   add_foreign_key "people", "countries"
   add_foreign_key "people", "document_types"
+  add_foreign_key "purchases", "countries"
+  add_foreign_key "purchases", "people"
+  add_foreign_key "sales", "bank_accounts"
   add_foreign_key "sales", "countries"
   add_foreign_key "sales", "people"
 end
