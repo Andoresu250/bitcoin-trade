@@ -14,7 +14,7 @@ class Sale < ApplicationRecord
   # validates :btc, :value, :evidence, presence: true
   validates :btc, :value, presence: true
   
-  validates :deposit_evidence, presence: true, on: :
+  validates :deposit_evidence, presence: true, on: :approve
   
   def self.filters
     [
