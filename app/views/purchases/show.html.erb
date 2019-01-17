@@ -1,0 +1,44 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Person:</strong>
+  <%= @purchase.person %>
+</p>
+
+<p>
+  <strong>Btc:</strong>
+  <%= @purchase.btc %>
+</p>
+
+<p>
+  <strong>Value:</strong>
+  <%= @purchase.value %>
+</p>
+
+<p>
+  <strong>Country:</strong>
+  <%= @purchase.country %>
+</p>
+
+<p>
+  <strong>State:</strong>
+  <%= @purchase.state %>
+</p>
+
+<p>
+  <strong>Bank account:</strong>
+  <%= @purchase.bank_account %>
+</p>
+
+<p>
+  <strong>Transfer evidence:</strong>
+  <%= @purchase.transfer_evidence %>
+</p>
+
+<p>
+  <strong>Deposit evidence:</strong>
+  <%= @purchase.deposit_evidence %>
+</p>
+
+<%= link_to 'Edit', edit_purchase_path(@purchase) %> |
+<%= link_to 'Back', purchases_path %>

@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   
   
   
+  resources :purchases
     scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/ , defaults: {format: :json} do
       
         resources :sessions, only: [:create]
