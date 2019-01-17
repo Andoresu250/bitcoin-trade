@@ -56,13 +56,16 @@ class UsersController < ApplicationController
   end
   
   def update    
+    puts person_params
     @this_user.assign_attributes(user_params, {override: false})    
     profile = @this_user.profile
     case @this_user.profile_type
     when "Person"
       profile.assign_attributes(person_params, {override: false})
-      return renderJson(:unprocessable, {error: {profile: profile.errors.messages}}) unless profile.save
+    when "Admin"
+      profile.assign_attributes(admin_params, {override: false})
     end
+    return renderJson(:unprocessable, {error: {profile: profile.errors.messages}}) unless profile.save
     if @this_user.save
       return render json: ActiveModelSerializers::SerializableResource.new(@this_user, each_serializer: MyUserSerializer), status: :ok
     else
@@ -126,6 +129,10 @@ class UsersController < ApplicationController
     rescue
       {}
     end
+  end
+  
+  def admin_params
+    params.require(:user).require(:profile).permit(:name)
   end
 
   def verify_user
