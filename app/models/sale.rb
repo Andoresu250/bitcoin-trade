@@ -6,12 +6,12 @@ class Sale < ApplicationRecord
   belongs_to :country
   belongs_to :bank_account
   
-  mount_uploader :evidence, ImageUploader
+  mount_uploader :transfer_evidence, ImageUploader
   mount_uploader :deposit_evidence, ImageUploader
   
   scope :by_state, -> (state) { where("sales.state LIKE ?", "#{state}")}
   
-  # validates :btc, :value, :evidence, presence: true
+  # validates :btc, :value, :transfer_evidence, presence: true
   validates :btc, :value, presence: true
   
   validates :deposit_evidence, presence: true, on: :approve
@@ -37,15 +37,15 @@ class Sale < ApplicationRecord
   end
   
   def set_value
-    # attributes = {
-    #   value: self.value
-    # }
-    # if self.country.present?
-    #   attributes[:currency] = self.country.money_code
-    #   attributes[:symbol] = self.country.symbol
-    # end
-    # calculator = Calculator.new(attributes)
-    # self.btc = calculator.btc
+    attributes = {
+      btc: self.btc
+    }
+    if self.country.present?
+      attributes[:currency] = self.country.money_code
+      attributes[:symbol] = self.country.symbol
+    end
+    calculator = Calculator.new(attributes)
+    self.value = calculator.value
   end
   
 end

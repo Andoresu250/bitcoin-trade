@@ -9,11 +9,11 @@ class SalesController < ApplicationController
 
   def index
     sales = @user.is_person? ? @user.profile.sales.filter(params) : Sale.filter(params)
-    return renderCollection("sales", sales, SaleSerializer, ['person.document_type', 'country'])
+    return renderCollection("sales", sales, SaleSerializer, ['person.document_type', 'country', 'bank_account.document_type'])
   end
   
   def show
-    return render json: @sale, status: :ok, include: ['person.document_type', 'country']
+    return render json: @sale, status: :ok, include: ['person.document_type', 'country', 'bank_account.document_type']
   end
 
   def create
@@ -76,7 +76,12 @@ class SalesController < ApplicationController
     end
     
     def sale_params
-      params.require(:sale).permit(:person_id, :btc, :value, :country_id, :state, :bank_account_id, :transfer_evidence, :deposit_evidence)
+      begin
+      # params.require(:sale).permit(:btc, :bank_account_id, :transfer_evidence, :deposit_evidence)
+        params.require(:sale).permit(:btc, :bank_account_id)  
+      rescue 
+        {}
+      end
     end
     
     def verify_user
