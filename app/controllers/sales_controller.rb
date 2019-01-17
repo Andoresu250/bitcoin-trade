@@ -40,12 +40,13 @@ class SalesController < ApplicationController
 
   def approve
     if @sale.may_approve?
+      bank_account = @sale.bank_account
       @sale.approve
       @sale.assign_attributes(sale_params)
       if @sale.save
         user = @sale.person.user      
         money = number_to_currency(@sale.value, unit: @sale.country.unit)
-        msg = "Hola #{user.full_name}, gracias por confiar en nosotros tu venta de #{@sale.btc} bitcoins por valor #{money} de ha sido aprobada exitosamente, revisa tu billetera y valida que todo este en orden."
+        msg = "Hola #{user.full_name}, gracias por confiar en nosotros tu venta de #{@sale.btc} bitcoins por valor #{money} de ha sido aprobada exitosamente, revisa tu cuenta de #{bank_account.bank} numero "{bank_account.number} y valida que todo este en orden."
         sbj = "Compra exitosa"
         NotificationMailer.simple_notification(user, msg, sbj).deliver
         return renderJson(:created, { notice: 'La Compra fue aprobada exitosamente' })
