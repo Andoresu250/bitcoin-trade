@@ -36,15 +36,27 @@ class ChargesController < ApplicationController
   
   def approve
     if @charge.may_approve?
-      @charge.approve!
+      @charge.approve
       person = @charge.person
       user = person.user
       person.balance += @charge.amount
-      money = number_to_currency(@charge.amount, precision: 2, unit: @charge.country.unit)
-      msg = "Hola #{user.full_name}, gracias por confiar en nosotros tu recarga por #{money} ha sido aprobada exitosamente"
-      sbj = "Recarga exitosa"
-      NotificationMailer.simple_notification(user, msg, sbj).deliver
-      return renderJson(:created, { notice: 'La recarga fue aprobada exitosamente' }) if person.save
+      if person.valid? && @charge.valid?
+        person.save
+        @charge.save
+        money = number_to_currency(@charge.amount, precision: 2, unit: @charge.country.unit)
+        msg = "Hola #{user.full_name}, gracias por confiar en nosotros tu recarga por #{money} ha sido aprobada exitosamente"
+        sbj = "Recarga exitosa"
+        NotificationMailer.simple_notification(user, msg, sbj).deliver
+        return renderJson(:created, { notice: 'La recarga fue aprobada exitosamente' })
+      else
+        unless person.valid?
+          puts person.errors.full_messages
+        end
+        unless @charge.valid?
+          puts @charge.errors.full_messages
+        end
+      end
+      
     end
     return renderJson(:unprocessable, {error: 'La recarga no se pudo aprobar'})
   end
@@ -62,22 +74,6 @@ class ChargesController < ApplicationController
     end
     return renderJson(:unprocessable, {error: 'La recarga no se pudo rechazar'})
   end
-  
-  
-  
-#   def update
-#     @charge.assign_attributes(charge_params)
-#     if @charge.save
-#       return render json: @charge, status: :ok
-#     else
-#       return renderJson(:unprocessable, {error: @charge.errors.messages})
-#     end
-#   end
-  
-#   def destroy
-#     @charge.destroy
-#     return renderJson(:no_content)
-#   end
 
   private
 

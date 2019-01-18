@@ -36,7 +36,7 @@ class PurchasesController < ApplicationController
       msg = "Hola #{@user.full_name}, gracias por confiar en nosotros has una compra de #{btc} bitcoins por valor de #{money}, validaremos tu dinero tan pronto como sea posible, y si todo esta en orden aprobaremos tu compra y se te sera transferido la cantidad de btc aquirido a tu billetera"
       sbj = "Nueva Compra"
       NotificationMailer.simple_notification(@user, msg, sbj).deliver
-      return render json: purchase, status: :created
+      return render json: purchase, status: :created, include: ['person.document_type', 'country']
     else
       return renderJson(:unprocessable, {error: purchase.errors.messages})
     end
@@ -52,7 +52,8 @@ class PurchasesController < ApplicationController
         msg = "Hola #{user.full_name}, gracias por confiar en nosotros tu compra de #{@purchase.btc} bitcoins por valor #{money} de ha sido aprobada exitosamente, revisa tu billetera y valida que todo este en orden."
         sbj = "Compra exitosa"
         NotificationMailer.simple_notification(user, msg, sbj).deliver
-        return renderJson(:created, { notice: 'La Compra fue aprobada exitosamente' })
+        # return renderJson(:created, { notice: 'La Compra fue aprobada exitosamente' })
+        return render json: @purchase, status: :created, include: ['person.document_type', 'country']
       end
     end
     return renderJson(:unprocessable, {error: 'La compra no se pudo aprobar'})

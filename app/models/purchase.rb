@@ -10,7 +10,7 @@ class Purchase < ApplicationRecord
   scope :by_state, -> (state) { where("purchases.state LIKE ?", "#{state}")}
   
   validates :value, :btc, :wallet_url, presence: true
-  validates :value, :evidence, presence: true, on: :approve
+  validates :evidence, presence: true, on: :approve
   
   def self.filters
     [

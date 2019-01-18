@@ -32,7 +32,7 @@ class SalesController < ApplicationController
       msg = "Hola #{@user.full_name}, gracias por confiar en nosotros has realizado una venta de #{btc} bitcoins por valor de #{money}, validaremos tu dinero tan pronto como sea posible, y si todo esta en orden aprobaremos tu venta y se te sera transferido la cantidad de btc aquirido a tu billetera"
       sbj = "Nueva Compra"
       NotificationMailer.simple_notification(@user, msg, sbj).deliver
-      return render json: sale, status: :created
+      return render json: sale, status: :created, include: ['person.document_type', 'country', 'bank_account.document_type']
     else
       return renderJson(:unprocessable, {error: sale.errors.messages})
     end
@@ -49,7 +49,10 @@ class SalesController < ApplicationController
         msg = "Hola #{user.full_name}, gracias por confiar en nosotros tu venta de #{@sale.btc} bitcoins por valor #{money} de ha sido aprobada exitosamente, revisa tu cuenta de #{bank_account.bank} numero #{bank_account.number} y valida que todo este en orden."
         sbj = "Compra exitosa"
         NotificationMailer.simple_notification(user, msg, sbj).deliver
-        return renderJson(:created, { notice: 'La Compra fue aprobada exitosamente' })
+        # return renderJson(:created, { notice: 'La Compra fue aprobada exitosamente' })
+        return render json: @sale, status: :ok, include: ['person.document_type', 'country', 'bank_account.document_type']
+      else
+        puts @sale.errors.full_messages
       end
     end
     return renderJson(:unprocessable, {error: 'La venta no se pudo aprobar'})

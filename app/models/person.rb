@@ -13,7 +13,7 @@ class Person < ApplicationRecord
   mount_uploader :identification_back, ImageUploader
   mount_uploader :public_receipt, ImageUploader
   
-  validates :first_names, :last_names, :identification, :phone, :identification_front, :identification_back, presence: true
+  validates :first_names, :last_names, :identification, :phone, :identification_front, :identification_back, presence: true, on: :create
   # validates :first_names, :last_names, :identification, :phone, presence: true
   validates :identification, uniqueness: { scope: :document_type_id }
   validates_numericality_of :balance, greater_than_or_equal_to: 0
