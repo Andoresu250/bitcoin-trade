@@ -34,6 +34,7 @@ gem 'will_paginate', '~> 3.1.0'
 gem 'aasm', '~> 5.0.0'
 gem 'carrierwave', '~> 1.0'
 gem 'rest-client'
+gem 'multipart-parser', '~> 0.1.1'
 # mini magick need this package
 # sudo apt-get install libmagickwand-dev
 # sudo apt-get update

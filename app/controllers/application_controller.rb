@@ -4,6 +4,24 @@ class ApplicationController < ActionController::Base
     protect_from_forgery with: :null_session
     around_action :with_time_zone
     
+    before_action :deep_underscore_params!
+
+
+    def deep_underscore_params!(val = request.parameters)
+      case val
+      when Array
+        val.map { |v| deep_underscore_params!(v) }
+      when Hash
+        val.keys.each do |k, v = val[k]|
+          val.delete k
+          val[k.underscore] = deep_underscore_params!(v)
+        end
+        params = val
+      else
+        val
+      end
+    end
+    
     def renderJson(type, opts = {})
         case type
         when :created
@@ -87,4 +105,5 @@ class ApplicationController < ActionController::Base
         @user.is_person? ? @user : renderJson(:unauthorized)
     end
     
+
 end

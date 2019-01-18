@@ -11,8 +11,7 @@ class Sale < ApplicationRecord
   
   scope :by_state, -> (state) { where("sales.state LIKE ?", "#{state}")}
   
-  # validates :btc, :value, :transfer_evidence, presence: true
-  validates :btc, :value, presence: true
+  validates :btc, :value, :transfer_evidence, presence: true
   
   validates :deposit_evidence, presence: true, on: :approve
   

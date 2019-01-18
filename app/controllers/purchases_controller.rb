@@ -46,7 +46,7 @@ class PurchasesController < ApplicationController
     if @purchase.may_approve?
       @purchase.approve
       @purchase.assign_attributes(purchase_params)
-      if @purchase.save
+      if @purchase.save(context: :approve)
         user = @purchase.person.user      
         money = number_to_currency(@purchase.value, unit: @purchase.country.unit)
         msg = "Hola #{user.full_name}, gracias por confiar en nosotros tu compra de #{@purchase.btc} bitcoins por valor #{money} de ha sido aprobada exitosamente, revisa tu billetera y valida que todo este en orden."
@@ -83,8 +83,7 @@ class PurchasesController < ApplicationController
 
 
     def purchase_params
-      # params.require(:purchase).permit(:value, :wallet_url, :evidence)
-      params.require(:purchase).permit(:value, :wallet_url)
+      params.require(:purchase).permit(:value, :wallet_url, :evidence)
     end
 end
   

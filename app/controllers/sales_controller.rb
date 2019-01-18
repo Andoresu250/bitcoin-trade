@@ -43,7 +43,7 @@ class SalesController < ApplicationController
       bank_account = @sale.bank_account
       @sale.approve
       @sale.assign_attributes(sale_params)
-      if @sale.save
+      if @sale.save(context: :approve)
         user = @sale.person.user      
         money = number_to_currency(@sale.value, unit: @sale.country.unit)
         msg = "Hola #{user.full_name}, gracias por confiar en nosotros tu venta de #{@sale.btc} bitcoins por valor #{money} de ha sido aprobada exitosamente, revisa tu cuenta de #{bank_account.bank} numero #{bank_account.number} y valida que todo este en orden."
@@ -78,8 +78,7 @@ class SalesController < ApplicationController
     
     def sale_params
       begin
-      # params.require(:sale).permit(:btc, :bank_account_id, :transfer_evidence, :deposit_evidence)
-        params.require(:sale).permit(:btc, :bank_account_id)  
+        params.require(:sale).permit(:btc, :bank_account_id, :transfer_evidence, :deposit_evidence)
       rescue 
         {}
       end

@@ -55,8 +55,7 @@ class UsersController < ApplicationController
     end
   end
   
-  def update    
-    puts person_params
+  def update
     @this_user.assign_attributes(user_params, {override: false})    
     profile = @this_user.profile
     case @this_user.profile_type
@@ -124,8 +123,7 @@ class UsersController < ApplicationController
   
   def person_params
     begin
-      # params.require(:user).require(:profile).permit(:first_names, :last_names, :identification, :phone, :identification_front, :identification_back, :public_receipt, :country_id, :document_type_id)
-      params.require(:user).require(:profile).permit(:first_names, :last_names, :identification, :phone, :country_id, :document_type_id)
+      params.require(:user).require(:profile).permit(:first_names, :last_names, :identification, :phone, :identification_front, :identification_back, :public_receipt, :country_id, :document_type_id)
     rescue
       {}
     end
