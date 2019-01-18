@@ -4,22 +4,24 @@ class ApplicationController < ActionController::Base
     protect_from_forgery with: :null_session
     around_action :with_time_zone
     
-    before_action :deep_underscore_params!
-
-
-    def deep_underscore_params!(val = request.parameters)
-      case val
-      when Array
-        val.map { |v| deep_underscore_params!(v) }
-      when Hash
-        val.keys.each do |k, v = val[k]|
-          val.delete k
-          val[k.underscore] = deep_underscore_params!(v)
+    before_action :underscore_params!
+    
+    def underscore_params!
+      return nil unless /^multipart\/form-data*/.match(request.headers['content-type'])
+      underscore_hash = -> (hash) do
+        hash.transform_keys!(&:underscore)
+        hash.each do |key, value|
+          if value.is_a?(ActionController::Parameters)
+            underscore_hash.call(value)
+          elsif value.is_a?(Array)
+            value.each do |item|
+              next unless item.is_a?(ActionController::Parameters)
+              underscore_hash.call(item)
+            end
+          end
         end
-        params = val
-      else
-        val
       end
+      underscore_hash.call(params)
     end
     
     def renderJson(type, opts = {})
@@ -65,6 +67,22 @@ class ApplicationController < ActionController::Base
                 camelize(hash[k])
             else
                 hash[k.to_s.camelize(:lower)] = hash.delete(k)
+            end
+        end
+        return hash
+    end
+    
+    def underscoreze(hash)
+        hash.keys.each do |k|
+            new_key = k.to_s.underscore
+            if hash[k].is_a? Hash
+                if hash[new_key].nil?
+                    hash[new_key] = underscoreze(hash.delete(k))
+                else
+                    hash[new_key] = hash[new_key].merge(underscoreze(hash.delete(k)))
+                end
+            else
+                hash[new_key] = hash.delete(k)
             end
         end
         return hash
