@@ -23,6 +23,7 @@ class PurchasesController < ApplicationController
     purchase.person = person
     purchase.country = person.country
     purchase.set_btc
+    purchase.value = purchase_params[:amount] unless purchase.value
     if purchase.valid?
       person.balance -= purchase.value
       return renderJson(:unprocessable, {error: 'No tienes el saldo suficiente para esta compra'}) unless person.save
