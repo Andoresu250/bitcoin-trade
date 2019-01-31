@@ -20,16 +20,16 @@ class SettingSerializer < ApplicationSerializer
         return pretty? ? "#{object.active_traders}" : object.active_traders
     end
     def market_cap
-        0
+        return pretty? ? "#{string_to_money(object.market_cap, 0)}" : object.market_cap
     end
     def daily_transactions
-        0
+        return pretty? ? "#{object.daily_transactions}" : object.daily_transactions
     end
     def active_accounts
-        0
+        return pretty? ? "#{object.active_accounts}" : object.active_accounts
     end
     def supported_countries
-        0
+        return pretty? ? "#{object.supported_countries}" : object.supported_countries
     end
     
     def pretty?

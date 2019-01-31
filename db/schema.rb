@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_16_234829) do
+ActiveRecord::Schema.define(version: 2019_01_31_024013) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -133,6 +133,10 @@ ActiveRecord::Schema.define(version: 2019_01_16_234829) do
     t.integer "active_traders"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "market_cap", default: "0.0"
+    t.integer "daily_transactions", default: 0
+    t.integer "active_accounts", default: 0
+    t.integer "supported_countries", default: 0
   end
 
   create_table "tokens", force: :cascade do |t|

@@ -25,7 +25,7 @@ class SettingsController < ApplicationController
   private
 
     def setting_params      
-      params.require(:setting).permit(:last_trade_price, :purchase_percentage, :sale_percentage, :hour_volume, :active_traders)
+      params.require(:setting).permit(:last_trade_price, :purchase_percentage, :sale_percentage, :hour_volume, :active_traders, :market_cap, :daily_transactions, :active_accounts, :supported_countries)
     end
     
     def pretty
