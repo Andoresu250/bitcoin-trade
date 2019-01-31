@@ -5,7 +5,7 @@ class SettingsController < ApplicationController
 
   def index
     setting = Setting.current    
-    return render json: setting, status: :ok
+    return render json: setting, status: :ok, scope: pretty
   end
 
   def create    
@@ -26,5 +26,13 @@ class SettingsController < ApplicationController
 
     def setting_params      
       params.require(:setting).permit(:last_trade_price, :purchase_percentage, :sale_percentage, :hour_volume, :active_traders)
+    end
+    
+    def pretty
+      if params[:pretty].present? && params[:pretty] == 'false'
+        return nil
+      else
+        "pretty"
+      end
     end
 end
