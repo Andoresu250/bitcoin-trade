@@ -9,8 +9,8 @@ class Charge < ApplicationRecord
     
     scope :by_state, -> (state) { where("charges.state LIKE ?", "#{state}")}
     
-    validates :amount, :state, :evidence, presence: true
-    # validates :amount, :state, presence: true
+    # validates :amount, :state, :evidence, presence: true
+    validates :amount, :state, presence: true
     
     def self.filters
         [
