@@ -24,11 +24,11 @@ class Sale < ApplicationRecord
   
   aasm(:state) do
     state :pendiente, initial: true
-    state :aprovado
+    state :aprobado
     state :denegado
 
     event  :approve do
-      transitions  from: :pendiente, to: :aprovado
+      transitions  from: :pendiente, to: :aprobado
     end
     
     event :deny do
