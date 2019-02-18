@@ -47,7 +47,7 @@ class CountriesController < ApplicationController
       params.require(:country).permit(
         :name, 
         :code,
-        :money_code, :symbol,
+        :money_code, :symbol, :time_zone, :locale,
         document_types_attributes: [
           :id,
           :name,
