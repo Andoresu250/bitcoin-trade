@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Person:</strong>
+  <%= @btc_charge.person %>
+</p>
+
+<p>
+  <strong>Btc:</strong>
+  <%= @btc_charge.btc %>
+</p>
+
+<p>
+  <strong>State:</strong>
+  <%= @btc_charge.state %>
+</p>
+
+<p>
+  <strong>Evidence:</strong>
+  <%= @btc_charge.evidence %>
+</p>
+
+<p>
+  <strong>Qr:</strong>
+  <%= @btc_charge.qr %>
+</p>
+
+<%= link_to 'Edit', edit_btc_charge_path(@btc_charge) %> |
+<%= link_to 'Back', btc_charges_path %>

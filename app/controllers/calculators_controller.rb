@@ -11,7 +11,7 @@ class CalculatorsController < ApplicationController
   private
   
   def calculator_params
-    attribues = params.require(:calculator).permit(:btc, :value, :currency)
+    attribues = params.require(:calculator).permit(:btc, :value, :currency, :mode)
     if attribues[:currency].present?
       attribues[:symbol] = "$"
     else

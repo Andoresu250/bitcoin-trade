@@ -1,6 +1,14 @@
 class Calculator < ActiveModelSerializers::Model
     
-  attr_accessor :btc, :currency, :symbol, :value
+  attr_accessor :btc, :currency, :symbol, :value, :mode
+  
+  def self.BUY_MODE
+    0
+  end
+  
+  def self.SELL_MODE
+    1
+  end
     
   # Create the object
   def initialize(attributes)
@@ -8,7 +16,7 @@ class Calculator < ActiveModelSerializers::Model
     @currency = attributes[:currency]
     @symbol = attributes[:symbol]
     @value = attributes[:value].to_f if attributes[:value].present?
-    
+    @mode = attributes[:mode] || Calculator.BUY_MODE
     if @btc
       calculate_value
     else
@@ -35,6 +43,13 @@ class Calculator < ActiveModelSerializers::Model
         if body['success']
           usd_to_currency = body['quotes']["USD#{@currency}"].to_f
           @value = value * usd_to_currency
+          setting = Setting.current
+          if @mode == Calculator.BUY_MODE
+            @value = @value * (1 + setting.purchase_percentage)
+          elsif @mode == Calculator.SELL_MODE
+            @value = @value * (1 + setting.sale_percentage)
+          end
+          @value = @value.to_f
         end
       end
     end
@@ -42,12 +57,18 @@ class Calculator < ActiveModelSerializers::Model
   
   def calculate_btc
     value = @value
+    setting = Setting.current
+    if @mode == Calculator.BUY_MODE
+      value = value * (1 - setting.purchase_percentage)
+    elsif @mode == Calculator.SELL_MODE
+      value = value * (1 - setting.sale_percentage)
+    end
     unless @currency == 'USD'
       response = RestClient.get "http://www.apilayer.net/api/live?access_key=#{ENV['currencylayer_api_key']}"
       body = JSON.parse(response.body)
       if body['success']
         usd_to_currency = body['quotes']["USD#{@currency}"].to_f
-        value = @value/usd_to_currency
+        value = value/usd_to_currency
       end
     end
     url = "https://blockchain.info/tobtc?currency=USD&value=#{value}"

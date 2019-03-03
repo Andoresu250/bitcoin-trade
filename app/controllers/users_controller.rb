@@ -105,10 +105,12 @@ class UsersController < ApplicationController
   def balance
     if @user.profile_type == "Person"
       money = number_to_currency(@user.profile.balance, precision: 2, unit: @user.profile.country.unit)
+      btc = number_to_currency(@user.profile.btc, precision: nil, unit: "Ƀ")
     else
       money = nil
+      btc = nil
     end
-    return renderJson(:ok, {balance: money})
+    return renderJson(:ok, {balance: money, btc: btc})
   end
 
   private

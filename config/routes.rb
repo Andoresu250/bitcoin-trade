@@ -1,8 +1,6 @@
 Rails.application.routes.draw do
   
   
-  
-  resources :purchases
     scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/ , defaults: {format: :json} do
       
         resources :sessions, only: [:create]
@@ -43,6 +41,15 @@ Rails.application.routes.draw do
             end
         end
         resources :settings, only: [:index, :create]
+        resources :btc_charges do
+            member do
+                put :approve
+                put :deny
+                put :check
+                put :successful
+            end
+        end
+        resources :purchases
         
     end
 end

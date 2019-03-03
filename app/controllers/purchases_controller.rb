@@ -74,8 +74,6 @@ class PurchasesController < ApplicationController
     end
     return renderJson(:unprocessable, {error: 'La compra no se pudo rechazar'})
   end
-  
-  # TODO: add evidence
 
   private
 
