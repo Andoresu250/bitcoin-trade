@@ -38,7 +38,8 @@ class Sale < ApplicationRecord
   
   def set_value
     attributes = {
-      btc: self.btc
+      btc: self.btc,
+      mode: Calculator.SELL_MODE
     }
     if self.country.present?
       attributes[:currency] = self.country.money_code

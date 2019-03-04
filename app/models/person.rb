@@ -17,6 +17,7 @@ class Person < ApplicationRecord
   # validates :first_names, :last_names, :identification, :phone, presence: true
   validates :identification, uniqueness: { scope: :document_type_id }
   validates_numericality_of :balance, greater_than_or_equal_to: 0
+  validates_numericality_of :btc, greater_than_or_equal_to: 0
   
   def full_name
     "#{self.first_names} #{self.last_names}"
