@@ -8,7 +8,7 @@ class BtcChargesController < ApplicationController
   before_action :is_admin?, only: [:approve, :deny, :successful]
 
   def index
-    charges = @user.is_person? ? @user.profile.charges.filter(params) : BtcCharge.filter(params)
+    charges = @user.is_person? ? @user.profile.btc_charges.filter(params) : BtcCharge.filter(params)
     return renderCollection("charges", charges, BtcChargeSerializer, ['person.document_type', 'country'])
   end
   

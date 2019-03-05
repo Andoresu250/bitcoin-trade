@@ -6,6 +6,7 @@ class Person < ApplicationRecord
   belongs_to :country
   has_many :bank_accounts, dependent: :destroy
   has_many :charges, dependent: :destroy
+  has_many :btc_charges, dependent: :destroy
   has_many :sales
   has_many :purchases
   
