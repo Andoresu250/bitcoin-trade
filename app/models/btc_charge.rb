@@ -9,7 +9,7 @@ class BtcCharge < ApplicationRecord
   
     has_one :country, through: :person
     
-    scope :by_state, -> (state) { where("charges.state LIKE ?", "#{state}")}
+    scope :by_state, -> (state) { where("btc_charges.state LIKE ?", "#{state}")}
     
     validates :btc, :state, presence: true
     
@@ -42,7 +42,7 @@ class BtcCharge < ApplicationRecord
         end
         
         event :successful do
-            transitions  from: :validando, to: :aceptado
+            transitions  from: :validando, to: :exitoso
         end
     end
   

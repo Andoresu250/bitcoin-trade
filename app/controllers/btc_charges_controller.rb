@@ -46,7 +46,8 @@ class BtcChargesController < ApplicationController
         msg = "Hola #{user.full_name}, gracias por confiar en nosotros tu recarga por #{money} ha sido aprobada exitosamente, usa este codigo QR para realizar la transferencia"
         sbj = "Recarga aceptada"
         NotificationMailer.image_notification(user, msg, sbj, @charge.qr.url).deliver
-        return renderJson(:created, { notice: 'La recarga fue aprobada exitosamente' })
+        # return renderJson(:created, { notice: 'La recarga fue aprobada exitosamente' })
+        return render json: @charge, status: :ok, include: ['person.document_type', 'country']
       else
         unless @charge.valid?(:approve) 
           puts @charge.errors.full_messages
@@ -95,7 +96,8 @@ class BtcChargesController < ApplicationController
         msg = "Hola #{user.full_name}, gracias por confiar en nosotros tu recarga por #{money} ha sido efectuada exitosamente, ahora podras hacer uso de tus BTC para venderlos"
         sbj = "Recarga aceptada"
         NotificationMailer.simple_notification(user, msg, sbj).deliver
-        return renderJson(:created, { notice: 'La recarga fue aprobada exitosamente' })
+        # return renderJson(:created, { notice: 'La recarga fue aprobada exitosamente' })
+        return render json: @charge, status: :ok, include: ['person.document_type', 'country']
       else
         unless @charge.valid?(:successful)  
           puts @charge.errors.full_messages
@@ -112,11 +114,11 @@ class BtcChargesController < ApplicationController
       @charge.deny!
       person = @charge.person
       user = person.user
-      money = number_to_currency(charge.btc, unit: "Ƀ", precision: nil)
+      money = number_to_currency(@charge.btc, unit: "Ƀ", precision: nil)
       msg = "Hola #{user.full_name}, lastimosamente tu recarga por #{money} ha sido rechazada, de ser necesario vuelve a intentar el proceso nuevamente"
       sbj = "Recarga fallida"
       NotificationMailer.simple_notification(user, msg, sbj).deliver
-      return renderJson(:created, { notice: 'La recarga fue rechazada exitosamente' }) if person.save
+      return render json: @charge, status: :ok, include: ['person.document_type', 'country'] if person.save
     end
     return renderJson(:unprocessable, {error: 'La recarga no se pudo rechazar'})
   end
