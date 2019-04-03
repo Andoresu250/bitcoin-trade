@@ -11,6 +11,7 @@ class Charge < ApplicationRecord
     
     # validates :amount, :state, :evidence, presence: true
     validates :amount, :state, presence: true
+    validates :amount, numericality: { greater_than: 0 }
     
     def self.filters
         [

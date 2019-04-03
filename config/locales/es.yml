@@ -41,8 +41,16 @@ es:
         person_id: Persona
         amount: Valor
         state: Estado
-        evidence: Evidencia        
-
+        evidence: Evidencia  
+        
+      charge_point:
+        owner: Titular
+        account_type: Tipo de Cuenta
+        number: Numero de Cuenta
+        owner_identification: Idenficacion Titular  
+        iban: IBAN
+        bank: Banco
+        
       country:
         name: Nombre
         code: Codigo
@@ -121,6 +129,7 @@ es:
         settings: Configuraciones
         tokens: Tokens
         users: Usuarios
+        charge_point: Bancos
 
     date:
     abbr_day_names:

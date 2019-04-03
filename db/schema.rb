@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_03_154438) do
+ActiveRecord::Schema.define(version: 2019_03_30_154814) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -57,6 +57,19 @@ ActiveRecord::Schema.define(version: 2019_03_03_154438) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["person_id"], name: "index_btc_charges_on_person_id"
+  end
+
+  create_table "charge_points", force: :cascade do |t|
+    t.bigint "country_id"
+    t.string "owner"
+    t.string "account_type"
+    t.string "number"
+    t.string "owner_identification"
+    t.string "iban"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "bank"
+    t.index ["country_id"], name: "index_charge_points_on_country_id"
   end
 
   create_table "charges", force: :cascade do |t|
@@ -176,6 +189,7 @@ ActiveRecord::Schema.define(version: 2019_03_03_154438) do
   add_foreign_key "bank_accounts", "people"
   add_foreign_key "blogs", "users"
   add_foreign_key "btc_charges", "people"
+  add_foreign_key "charge_points", "countries"
   add_foreign_key "charges", "people"
   add_foreign_key "document_types", "countries"
   add_foreign_key "people", "countries"

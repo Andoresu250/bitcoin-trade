@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Owner:</strong>
+  <%= @charge_point.owner %>
+</p>
+
+<p>
+  <strong>Account type:</strong>
+  <%= @charge_point.account_type %>
+</p>
+
+<p>
+  <strong>Number:</strong>
+  <%= @charge_point.number %>
+</p>
+
+<p>
+  <strong>Owner identification:</strong>
+  <%= @charge_point.owner_identification %>
+</p>
+
+<p>
+  <strong>Iban:</strong>
+  <%= @charge_point.iban %>
+</p>
+
+<%= link_to 'Edit', edit_charge_point_path(@charge_point) %> |
+<%= link_to 'Back', charge_points_path %>

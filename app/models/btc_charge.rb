@@ -12,6 +12,7 @@ class BtcCharge < ApplicationRecord
     scope :by_state, -> (state) { where("btc_charges.state LIKE ?", "#{state}")}
     
     validates :btc, :state, presence: true
+    validates :btc, numericality: { greater_than: 0 }
     
     validates :qr, presence: true, on: :approve
     validates :evidence, presence: true, on: :check

@@ -28,7 +28,7 @@ class CountriesController < ApplicationController
     if @country.save
       return render json: @country, status: :ok    
     else
-      return renderJson(:unprocessable, {error: country.errors.messages})
+      return renderJson(:unprocessable, {error: @country.errors.messages})
     end
   end
 

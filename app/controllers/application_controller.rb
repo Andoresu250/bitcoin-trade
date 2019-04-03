@@ -56,6 +56,7 @@ class ApplicationController < ActionController::Base
     
     def with_time_zone
         locale = params[:locale] || I18n.locale
+        puts params[:locale]
         @time_zone_country = Country.by_locale(locale)
         @default_country = @time_zone_country
         Time.use_zone(@time_zone_country.time_zone) { yield }

@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
   
-  
     scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/ , defaults: {format: :json} do
       
         resources :sessions, only: [:create]
@@ -50,6 +49,7 @@ Rails.application.routes.draw do
             end
         end
         resources :purchases
+        resources :charge_points
         
     end
 end

@@ -1,6 +1,7 @@
 class Country < ApplicationRecord
     
     has_many :document_types, dependent: :destroy
+    has_many :charge_points, dependent: :destroy
     
     accepts_nested_attributes_for :document_types, allow_destroy: true
     
