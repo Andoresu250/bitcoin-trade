@@ -19,7 +19,6 @@ class ChargePointsController < ApplicationController
   end
   
   def create
-    puts charge_point_params
     charge_point = ChargePoint.new(charge_point_params)
     if charge_point.save  
       return render json: charge_point, status: :created    
@@ -29,7 +28,7 @@ class ChargePointsController < ApplicationController
   end
   
   def update
-    @charge_point.assign_attributes(country_params)
+    @charge_point.assign_attributes(charge_point_params)
     if @charge_point.save
       return render json: @charge_point, status: :ok    
     else
