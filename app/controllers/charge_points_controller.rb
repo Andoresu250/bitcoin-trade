@@ -1,7 +1,8 @@
 class ChargePointsController < ApplicationController
   
-  before_action :verify_token, only: [:create, :update, :delete]
-  before_action :is_admin?, only: [:create, :update, :delete]
+  before_action :verify_token, only: [:create, :update, :destroy]
+  before_action :is_admin?, only: [:create, :update, :destroy]
+  before_action :set_charge_point, only: [:update, :destroy]
 
   def index
     params[:per_page] = 100

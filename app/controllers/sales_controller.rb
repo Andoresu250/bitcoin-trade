@@ -4,7 +4,7 @@ class SalesController < ApplicationController
   
     before_action :verify_token
     before_action :set_sale, only: [:show, :destroy, :approve, :deny]
-    before_action :verify_user, only: [:show, :delete]
+    before_action :verify_user, only: [:show, :destroy]
     before_action :is_admin?, only: [:approve, :deny]
   
     def index

@@ -2,7 +2,7 @@ class BankAccountsController < ApplicationController
   
   before_action :verify_token
   before_action :set_bank_account, only: [:show, :update, :destroy]
-  before_action :verify_user, only: [:show, :update, :delete]
+  before_action :verify_user, only: [:show, :update, :destroy]
 
   def index
     bank_accounts = @user.is_person? ? @user.profile.bank_accounts.filter(params) : BankAccount.filter(params)

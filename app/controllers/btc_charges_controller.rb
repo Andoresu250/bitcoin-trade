@@ -4,7 +4,7 @@ class BtcChargesController < ApplicationController
 
   before_action :verify_token
   before_action :set_charge, only: [:show, :destroy, :approve, :deny, :check, :successful]
-  before_action :verify_user, only: [:show, :delete, :check]
+  before_action :verify_user, only: [:show, :destroy, :check]
   before_action :is_admin?, only: [:approve, :deny, :successful]
 
   def index
