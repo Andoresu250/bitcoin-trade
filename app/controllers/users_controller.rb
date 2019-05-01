@@ -2,10 +2,11 @@ class UsersController < ApplicationController
   
   include ActionView::Helpers::NumberHelper
 
-  before_action :verify_token, except: [:create_person]
+  before_action :verify_token, except: [:create_person, :forgot_password, :restore_password, :check_reset_password_token]
   before_action :is_admin?, only: [:index, :create, :destroy]
   before_action :set_user, only: [:show, :update, :activate, :deactivate, :destroy]
   before_action :verify_user, only: [:show, :update, :destroy]
+  before_action :set_user_by_restore_token, only: [:restore_password, :check_reset_password_token]
 
   def index
     users = User.filter(params)
@@ -112,6 +113,37 @@ class UsersController < ApplicationController
     end
     return renderJson(:ok, {balance: money, btc: btc})
   end
+  
+  def check_reset_password_token
+    return renderJson(:ok)
+  end
+  
+  def forgot_password
+    return renderJson(:not_found, {base_errors: ["No se encontro un usuario con este email."]}) unless user = User.where("lower(email) = ?", user_params[:email].downcase).first
+    user.generate_reset_password_token!
+    user.save!
+    UserMailer.reset_password_email(user).deliver
+    renderJson(:ok, {notice: "Hemos enviado las intrucciones para restaurar tu contraseña a tu correo electronico."})
+  end
+
+  def restore_password    
+    @user.change_password!(restore_password_params[:password])
+    @user.reset_password_token = nil
+    @user.reset_password_token_expires_at = nil
+    @user.save!
+    return renderJson(:ok, {notice: "La contraseña a sido cambiada exitosamente"})       
+  end
+
+  def change_password
+    @user.change_password!(change_password_params[:password])
+    if @user.save
+      return renderJson(:ok, {notice: "La contraseña a sido cambiada exitosamente"})    
+    else
+      # puts @user.errors.full_messages
+      return renderJson(:unprocessable, {base_errors: @user.errors.messages})
+    end
+    
+  end
 
   private
 
@@ -138,4 +170,16 @@ class UsersController < ApplicationController
   def verify_user
     return renderJson(:unauthorized) if !@user.is_admin? && @this_user.id != @user.id
   end
+  
+  def restore_password_params
+    params.require(:user).permit(:token, :password)
+  end
+
+  def change_password_params
+    params.require(:user).permit(:password)
+  end
+  
+  def set_user_by_restore_token
+    return renderJson(:not_found, {errors: ["Este link para cambiar la contraseña ya no es valido."]}) unless @user = User.from_reset_password_token(restore_password_params[:token])
+  end  
 end

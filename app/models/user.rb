@@ -66,6 +66,10 @@ class User < ApplicationRecord
         self.profile.full_name
     end
     
+    def self.from_reset_password_token(token)
+        return where(reset_password_token: token).where("reset_password_token_expires_at >= ?", DateTime.now).first
+    end
+    
     def role_to_number
         case self.profile_type
         when "Admin"

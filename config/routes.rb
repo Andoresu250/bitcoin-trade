@@ -14,6 +14,10 @@ Rails.application.routes.draw do
         end
         match 'users/create_person' => 'users#create_person', via: :post
         match 'users/person/balance' => 'users#balance', via: :get
+        match 'users/forgot_password'   => 'users#forgot_password',   via: :post
+        match 'users/restore_password'  => 'users#restore_password',  via: :post
+        match 'users/check_reset_password_token'  => 'users#check_reset_password_token',  via: :post
+        match 'users/change_password'  => 'users#change_password',  via: :post
         
         resources :countries, only: [:index, :show, :create, :update, :destroy]
         resources :blogs
