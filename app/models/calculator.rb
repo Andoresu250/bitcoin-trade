@@ -1,6 +1,6 @@
 class Calculator < ActiveModelSerializers::Model
     
-  attr_accessor :btc, :currency, :symbol, :value, :mode
+  attr_accessor :btc, :currency, :symbol, :value, :mode, :country
   
   def self.BUY_MODE
     0
@@ -17,6 +17,7 @@ class Calculator < ActiveModelSerializers::Model
     @symbol = attributes[:symbol]
     @value = attributes[:value].to_f if attributes[:value].present?
     @mode = attributes[:mode] || Calculator.BUY_MODE
+    @country = attributes[:country] || Country.by_locale(I18n.locale)
     if @btc
       calculate_value
     else
@@ -43,7 +44,7 @@ class Calculator < ActiveModelSerializers::Model
         if body['success']
           usd_to_currency = body['quotes']["USD#{@currency}"].to_f
           @value = value * usd_to_currency
-          setting = Setting.current
+          setting = Setting.current(@country)
           if @mode == Calculator.BUY_MODE
             @value = @value * (1 + setting.purchase_percentage)
           elsif @mode == Calculator.SELL_MODE
@@ -57,7 +58,7 @@ class Calculator < ActiveModelSerializers::Model
   
   def calculate_btc
     value = @value
-    setting = Setting.current
+    setting = Setting.current(@country)
     if @mode == Calculator.BUY_MODE
       value = value * (1 - setting.purchase_percentage)
     elsif @mode == Calculator.SELL_MODE

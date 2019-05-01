@@ -4,12 +4,26 @@ class SettingsController < ApplicationController
   before_action :is_admin?, only: [:create]
 
   def index
-    setting = Setting.current    
-    return render json: setting, status: :ok, scope: pretty
+    if params[:index]
+      settings = Setting.filter(params)
+      return renderCollection("settings", settings, SettingSerializer, nil, pretty)
+    else
+      setting = Setting.current(@default_country)
+      return render json: setting, status: :ok, scope: pretty
+    end
   end
 
   def create    
-    setting = Setting.current
+    country = Country.find_by_hashid(setting_params[:country_id])
+    if country && country.setting
+      if country.setting
+        setting = country.setting
+      else
+        setting = Setting.current(country)
+      end
+    else
+      setting = Setting.current(@default_country)
+    end
     if setting.nil?
       setting = Setting.new(setting_params)
     else
@@ -25,7 +39,10 @@ class SettingsController < ApplicationController
   private
 
     def setting_params      
-      params.require(:setting).permit(:last_trade_price, :purchase_percentage, :sale_percentage, :hour_volume, :active_traders, :market_cap, :daily_transactions, :active_accounts, :supported_countries)
+      params.require(:setting).permit(
+                            :last_trade_price, :purchase_percentage, :sale_percentage, 
+                            :hour_volume, :active_traders, :market_cap, :daily_transactions, 
+                            :active_accounts, :supported_countries, :country_id)
     end
     
     def pretty

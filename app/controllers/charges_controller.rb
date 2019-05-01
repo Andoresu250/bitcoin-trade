@@ -9,11 +9,11 @@ class ChargesController < ApplicationController
 
   def index
     charges = @user.is_person? ? @user.profile.charges.filter(params) : Charge.filter(params)
-    return renderCollection("charges", charges, ChargeSerializer, ['person.document_type', 'country'])
+    return renderCollection("charges", charges, ChargeSerializer, ['person.document_type', 'country', 'charge_point'])
   end
   
   def show
-    return render json: @charge, status: :ok, include: ['person.document_type', 'country']
+    return render json: @charge, status: :ok, include: ['person.document_type', 'country', 'charge_point']
   end
   
   def create
@@ -82,7 +82,7 @@ class ChargesController < ApplicationController
     end
     
     def charge_params
-      params.require(:charge).permit(:amount, :evidence)
+      params.require(:charge).permit(:amount, :evidence, :charge_point_id)
     end
     
     def verify_user

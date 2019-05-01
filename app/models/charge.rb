@@ -5,6 +5,7 @@ class Charge < ApplicationRecord
     mount_uploader :evidence, ImageUploader
     
     belongs_to :person
+    belongs_to :charge_point
     has_one :country, through: :person
     
     scope :by_state, -> (state) { where("charges.state LIKE ?", "#{state}")}
