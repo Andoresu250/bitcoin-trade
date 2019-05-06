@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   include ActionView::Helpers::NumberHelper
 
   before_action :verify_token, except: [:create_person, :forgot_password, :restore_password, :check_reset_password_token]
-  before_action :is_admin?, only: [:index, :create, :destroy]
+  before_action :is_admin?, only: [:index, :create, :destroy, :admin_resume]
   before_action :set_user, only: [:show, :update, :activate, :deactivate, :destroy]
   before_action :verify_user, only: [:show, :update, :destroy]
   before_action :set_user_by_restore_token, only: [:restore_password, :check_reset_password_token]
@@ -143,6 +143,61 @@ class UsersController < ApplicationController
       return renderJson(:unprocessable, {base_errors: @user.errors.messages})
     end
     
+  end
+  
+  def person_resume
+    person = @user.profile
+    
+    total_btc_charges_count = person.btc_charges.aprobadas.count
+    total_btc_charges_sum   = number_to_currency(person.btc_charges.aprobadas.sum(:btc), unit: "Ƀ", precision: nil)
+    
+    total_charges_count = person.charges.aprobadas.count
+    total_charges_sum   = number_to_currency(person.charges.aprobadas.sum(:amount), unit: person.country.unit, precision: 2)
+    
+    total_purchase_count = person.purchases.aprobadas.count
+    total_purchase_sum = number_to_currency(person.purchases.aprobadas.sum(:btc), unit: "Ƀ", precision: nil)
+    
+    total_sale_count = person.sales.aprobadas.count
+    total_sale_sum = number_to_currency(person.sales.aprobadas.sum(:btc), unit: "Ƀ", precision: nil)
+    
+    total_charges_month_sum   = number_to_currency(person.charges.aprobadas.by_month.sum(:amount), unit: person.country.unit, precision: 2)
+    total_purchase_month_sum = number_to_currency(person.purchases.aprobadas.by_month.sum(:btc), unit:  "Ƀ", precision: 2)
+    total_sale_month_sum = number_to_currency(person.sales.aprobadas.by_month.sum(:btc), unit:  "Ƀ", precision: 2)
+     
+    json = {
+      total_charges_count: total_charges_count,
+      total_charges_sum: total_charges_sum,
+      total_btc_charges_count: total_btc_charges_count,
+      total_btc_charges_sum: total_btc_charges_sum,
+      total_purchase_count: total_purchase_count,
+      total_purchase_sum: total_purchase_sum,
+      total_sale_count: total_sale_count,
+      total_sale_sum: total_sale_sum,
+      total_charges_month_sum: total_charges_month_sum,
+      total_purchase_month_sum: total_purchase_month_sum,
+      total_sale_month_sum: total_sale_month_sum,
+    }
+    return renderJson(:ok, json)
+  end
+  
+  def admin_resume
+    countries_resume = []
+    Country.all.each do |country|
+      resume = {}
+      resume[:total_btc_charges_count] = country.btc_charges.aprobadas.count
+      resume[:total_btc_charges_sum]   = number_to_currency(country.btc_charges.aprobadas.sum(:btc), unit: "Ƀ", precision: nil)
+      resume[:total_charges_count] = country.charges.aprobadas.count
+      resume[:total_charges_sum]   = number_to_currency(country.charges.aprobadas.sum(:amount), unit: country.unit, precision: 2)
+      resume[:total_purchase_count] = country.purchases.aprobadas.count
+      resume[:total_purchase_sum] = number_to_currency(country.purchases.aprobadas.sum(:value), unit: country.unit, precision: 2)
+      resume[:total_purchase_bounty] = number_to_currency(country.purchases.aprobadas.sum(:bounty), unit: country.unit, precision: 2)
+      resume[:total_sale_count] = country.sales.aprobadas.count
+      resume[:total_sale_sum] = number_to_currency(country.sales.aprobadas.sum(:value), unit: country.unit, precision: 2)
+      resume[:total_sale_bounty] = number_to_currency(country.sales.aprobadas.sum(:bounty), unit: country.unit, precision: 2)
+      resume[:country] = ActiveModelSerializers::SerializableResource.new(country, each_serializer: CountrySerializer)
+      countries_resume << resume
+    end
+    return renderJson(:ok, countries_resume)
   end
 
   private

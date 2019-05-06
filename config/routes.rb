@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
   
+  
     scope "(:locale)", locale: /#{I18n.available_locales.join("|")}/ , defaults: {format: :json} do
+        
+        resources :contacts
       
         resources :sessions, only: [:create]
         match 'sessions/logout'              => 'sessions#destroy',       via: :delete
@@ -18,6 +21,8 @@ Rails.application.routes.draw do
         match 'users/restore_password'  => 'users#restore_password',  via: :post
         match 'users/check_reset_password_token'  => 'users#check_reset_password_token',  via: :post
         match 'users/change_password'  => 'users#change_password',  via: :post
+        match 'users/person/resume' => 'users#person_resume', via: :get
+        match 'users/admin/resume' => 'users#admin_resume', via: :get
         
         resources :countries, only: [:index, :show, :create, :update, :destroy]
         resources :blogs

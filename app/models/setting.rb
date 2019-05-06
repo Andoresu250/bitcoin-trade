@@ -13,7 +13,7 @@ class Setting < ApplicationRecord
   end
   
   def self.filters
-        [:by_country_id]
-    end
+    [:by_country_id]
+  end
   
 end

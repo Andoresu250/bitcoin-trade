@@ -37,7 +37,6 @@ class Calculator < ActiveModelSerializers::Model
       btc_value = body['USD']['last'].to_f
       
       @value = btc_value * @btc
-      
       unless @currency == 'USD'
         response = RestClient.get "http://www.apilayer.net/api/live?access_key=#{ENV['currencylayer_api_key']}"
         body = JSON.parse(response.body)
@@ -51,6 +50,7 @@ class Calculator < ActiveModelSerializers::Model
             @value = @value * (1 + setting.sale_percentage)
           end
           @value = @value.to_f
+        else
         end
       end
     end

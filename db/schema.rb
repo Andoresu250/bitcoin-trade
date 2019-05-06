@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_01_193807) do
+ActiveRecord::Schema.define(version: 2019_05_06_002944) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,6 +84,13 @@ ActiveRecord::Schema.define(version: 2019_05_01_193807) do
     t.index ["person_id"], name: "index_charges_on_person_id"
   end
 
+  create_table "contacts", force: :cascade do |t|
+    t.string "name"
+    t.string "phone"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "countries", force: :cascade do |t|
     t.string "name"
     t.string "code"
@@ -132,6 +139,8 @@ ActiveRecord::Schema.define(version: 2019_05_01_193807) do
     t.string "evidence"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "bounty", default: "0.0"
+    t.decimal "bounty_percentage", default: "0.0"
     t.index ["country_id"], name: "index_purchases_on_country_id"
     t.index ["person_id"], name: "index_purchases_on_person_id"
   end
@@ -147,6 +156,8 @@ ActiveRecord::Schema.define(version: 2019_05_01_193807) do
     t.string "deposit_evidence"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "bounty", default: "0.0"
+    t.decimal "bounty_percentage", default: "0.0"
     t.index ["bank_account_id"], name: "index_sales_on_bank_account_id"
     t.index ["country_id"], name: "index_sales_on_country_id"
     t.index ["person_id"], name: "index_sales_on_person_id"

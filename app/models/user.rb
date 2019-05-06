@@ -5,6 +5,8 @@ class User < ApplicationRecord
     authenticates_with_sorcery!
     
     has_many :tokens, dependent: :destroy
+    has_many :charges
+    has_many :btc_charges
     
     belongs_to :profile, polymorphic: true, optional: true, dependent: :destroy
     

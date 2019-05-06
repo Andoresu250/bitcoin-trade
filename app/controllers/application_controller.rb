@@ -63,11 +63,17 @@ class ApplicationController < ActionController::Base
     end
     
     def camelize(hash)
-        hash.keys.each do |k|
-            if hash[k].is_a? Hash
-                camelize(hash[k])
-            else
-                hash[k.to_s.camelize(:lower)] = hash.delete(k)
+        if hash.kind_of?(Array)
+            hash.each_with_index do |v, index|
+                hash[index] = camelize(v)
+            end
+        else
+            hash.keys.each do |k|
+                if hash[k].is_a? Hash
+                    camelize(hash[k])
+                else
+                    hash[k.to_s.camelize(:lower)] = hash.delete(k)
+                end
             end
         end
         return hash
