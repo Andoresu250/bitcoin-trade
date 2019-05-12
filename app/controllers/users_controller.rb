@@ -57,13 +57,14 @@ class UsersController < ApplicationController
   end
   
   def update
-    @this_user.assign_attributes(user_params, {override: false})    
+    @this_user.assign_attributes(user_update_params)    
     profile = @this_user.profile
     case @this_user.profile_type
     when "Person"
-      profile.assign_attributes(person_params, {override: false})
+      puts person_update_params
+      profile.assign_attributes(person_update_params)
     when "Admin"
-      profile.assign_attributes(admin_params, {override: false})
+      profile.assign_attributes(admin_params)
     end
     return renderJson(:unprocessable, {error: {profile: profile.errors.messages}}) unless profile.save
     if @this_user.save
@@ -210,9 +211,21 @@ class UsersController < ApplicationController
     params.require(:user).permit(:email, :profile_type, :password, :password_confirmation)
   end
   
+  def user_update_params
+    params.require(:user).permit(:email, :password, :password_confirmation)
+  end
+  
   def person_params
     begin
       params.require(:user).require(:profile).permit(:first_names, :last_names, :identification, :phone, :identification_front, :identification_back, :public_receipt, :country_id, :document_type_id)
+    rescue
+      {}
+    end
+  end
+  
+  def person_update_params
+    begin
+      params.require(:user).require(:profile).permit(:first_names, :last_names, :phone)
     rescue
       {}
     end
