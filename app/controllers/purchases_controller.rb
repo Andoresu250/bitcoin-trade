@@ -19,11 +19,12 @@ class PurchasesController < ApplicationController
     def create
       return renderJson(:unauthorized) unless @user.profile_type == "Person"
       purchase = Purchase.new(purchase_params)    
+      purchase.btc = btc_value
       person = @user.profile
       purchase.person = person
       purchase.country = person.country
-      purchase.set_btc
-      purchase.value = params[:purchase][:amount] unless purchase.value
+      # purchase.set_btc
+      purchase.set_value
       if purchase.valid?
         person.balance -= purchase.value
         return renderJson(:unprocessable, {error: 'No tienes el saldo suficiente para esta compra'}) unless person.save
@@ -87,7 +88,11 @@ class PurchasesController < ApplicationController
   
   
       def purchase_params
-        params.require(:purchase).permit(:value, :wallet_url, :evidence)
+        params.require(:purchase).permit(:wallet_url, :evidence)
+      end
+      
+      def btc_value
+        params.require(:purchase).permit(:value)[:value]
       end
   end
     

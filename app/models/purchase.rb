@@ -49,7 +49,8 @@ class Purchase < ApplicationRecord
   
   def set_btc
     attributes = {
-      value: self.value
+      value: self.value,
+      mode: Calculator.BUY_MODE
     }
     if self.country.present?
       attributes[:currency] = self.country.money_code
@@ -57,6 +58,19 @@ class Purchase < ApplicationRecord
     end
     calculator = Calculator.new(attributes)
     self.btc = calculator.btc
+  end
+  
+  def set_value
+    attributes = {
+      btc: self.btc,
+      mode: Calculator.BUY_MODE
+    }
+    if self.country.present?
+      attributes[:currency] = self.country.money_code
+      attributes[:symbol] = self.country.symbol
+    end
+    calculator = Calculator.new(attributes)
+    self.value = calculator.value
   end
   
 end
