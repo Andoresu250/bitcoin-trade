@@ -35,7 +35,7 @@ class Calculator < ActiveModelSerializers::Model
     if response.code == 200
       body = JSON.parse(response.body)
       btc_value = body['USD']['last'].to_f
-      
+      puts "btc_value #{btc_value}"
       @value = btc_value * @btc
       unless @currency == 'USD'
         response = RestClient.get "http://www.apilayer.net/api/live?access_key=#{ENV['currencylayer_api_key']}"
@@ -43,14 +43,14 @@ class Calculator < ActiveModelSerializers::Model
         if body['success']
           usd_to_currency = body['quotes']["USD#{@currency}"].to_f
           @value = value * usd_to_currency
+          puts "value base #{@value}"
           setting = Setting.current(@country)
-          if @mode == Calculator.BUY_MODE
-            @value = @value * (1 + setting.purchase_percentage)
-          elsif @mode == Calculator.SELL_MODE
-            @value = @value * (1 + setting.sale_percentage)
-          end
-          @value = @value.to_f
+          percentage = @mode == Calculator.BUY_MODE ? setting.purchase_percentage : setting.sale_percentage
+          puts "percentage #{percentage}"
+          @value = (@value * (1 + percentage)).to_f
+          puts "value edit #{@value}"
         else
+          #TODO: raise error
         end
       end
     end
@@ -59,11 +59,8 @@ class Calculator < ActiveModelSerializers::Model
   def calculate_btc
     value = @value
     setting = Setting.current(@country)
-    if @mode == Calculator.BUY_MODE
-      value = value * (1 - setting.purchase_percentage)
-    elsif @mode == Calculator.SELL_MODE
-      value = value * (1 - setting.sale_percentage)
-    end
+    percentage = @mode == Calculator.BUY_MODE ? setting.purchase_percentage : setting.sale_percentage
+    value = value * (1 - percentage)
     unless @currency == 'USD'
       response = RestClient.get "http://www.apilayer.net/api/live?access_key=#{ENV['currencylayer_api_key']}"
       body = JSON.parse(response.body)

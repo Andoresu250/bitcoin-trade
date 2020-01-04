@@ -2,7 +2,8 @@ class Setting < ApplicationRecord
   
   belongs_to :country
     
-  validates :last_trade_price, :purchase_percentage, :sale_percentage, :hour_volume, :active_traders, :market_cap, :daily_transactions, :active_accounts, :supported_countries, presence: true,  numericality: { greater_than: 0 }
+  validates :last_trade_price, :hour_volume, :active_traders, :market_cap, :daily_transactions, :active_accounts, :supported_countries, presence: true,  numericality: { greater_than: 0 }
+  validates :purchase_percentage, :sale_percentage, numericality: { inclusion: -0.99..0.99 }
   
   scope :by_country_id, -> (country_id) { where(country_id: Country.decode_id(country_id)) }
   
