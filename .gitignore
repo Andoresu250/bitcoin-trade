@@ -31,3 +31,5 @@
 
 # Ignore temp uploads
 /public/uploads/
+
+/.idea
