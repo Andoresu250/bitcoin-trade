@@ -6,5 +6,6 @@ class ApplicationMailer < ActionMailer::Base
   @@logo_black = 'https://i.imgur.com/McY7KbF.png'
   @@bitcoin_email = 'https://i.imgur.com/rxUFWx8.jpg'
   
-  @@url = 'https://bitcoinworldesp.es'
+  @@url = ENV['BASE_URL_DASHBOARD']
+
 end
