@@ -3,16 +3,27 @@
 User.create!(email: "admin@admin.com", password: "12345678", password_confirmation: "12345678") { |u| u.profile = Admin.create!(name: "Admin") }
 
 Country.create!(
-    name: "Colombia", code: "57", locale: "es-CO", time_zone: "Bogota", 
+    name: "Colombia", code: "57", locale: "es-CO", time_zone: "Bogota",
     money_code: "COP", symbol: "$",
     document_types_attributes: [
-        {name: "cedula", abbreviation: "cc"}
+          { name: "Cedula", abbreviation: "CC" },
+          { name: "Pasaporte", abbreviation: "PAS" }
         ]
     )
 Country.create!(
-    name: "Chile", code: "56", locale: "es-CL", time_zone: "Santiago", 
-    money_code: "CLP", symbol: "$",
+    name: "España", code: "34", locale: "es-ES", time_zone: "Madrid",
+    money_code: "EUR", symbol: "€",
     document_types_attributes: [
-        {name: "cedula", abbreviation: "cc"}
+      { name: "DNI", abbreviation: "DNI" },
+      { name: "Pasaporte", abbreviation: "PAS" }
         ]
     )
+
+Country.create!(
+    name: "Peru", code: "51", locale: "es-PE", time_zone: "Lima",
+    money_code: "EUR", symbol: "S/.",
+    document_types_attributes: [
+      { name: "DNI", abbreviation: "DNI" },
+      { name: "Pasaporte", abbreviation: "PAS" }
+    ]
+)
