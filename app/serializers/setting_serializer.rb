@@ -7,7 +7,7 @@ class SettingSerializer < ApplicationSerializer
     has_one :country
 
     def last_trade_price
-        return pretty? ? "#{string_to_money(object.last_trade_price, 0)} USD" : object.last_trade_price
+        return pretty? ? "#{string_to_money(object.last_trade_price, 0)}" : object.last_trade_price
     end
     def purchase_percentage
         return pretty? ? "#{to_percentage(object.purchase_percentage, 2, true)}" : object.purchase_percentage
@@ -22,7 +22,7 @@ class SettingSerializer < ApplicationSerializer
         return pretty? ? "#{object.active_traders}" : object.active_traders
     end
     def market_cap
-        object.market_cap
+        return pretty? ? "#{string_to_money(object.market_cap, 0)}" : object.market_cap
     end
     def daily_transactions
         return pretty? ? "#{object.daily_transactions}" : object.daily_transactions
