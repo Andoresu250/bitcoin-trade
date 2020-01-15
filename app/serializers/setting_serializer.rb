@@ -6,6 +6,9 @@ class SettingSerializer < ApplicationSerializer
 
     has_one :country
 
+    def last_trade_price
+        return object.last_trade_price
+    end
     def purchase_percentage
         return pretty? ? "#{to_percentage(object.purchase_percentage, 2, true)}" : object.purchase_percentage
     end
