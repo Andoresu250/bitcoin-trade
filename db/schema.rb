@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_15_123033) do
+ActiveRecord::Schema.define(version: 2020_01_25_175646) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -125,6 +125,7 @@ ActiveRecord::Schema.define(version: 2020_01_15_123033) do
     t.datetime "updated_at", null: false
     t.decimal "balance", default: "0.0"
     t.decimal "btc", default: "0.0"
+    t.decimal "bonus", default: "0.0"
     t.index ["country_id"], name: "index_people_on_country_id"
     t.index ["document_type_id"], name: "index_people_on_document_type_id"
   end
@@ -200,7 +201,10 @@ ActiveRecord::Schema.define(version: 2020_01_15_123033) do
     t.string "reset_password_token"
     t.datetime "reset_password_token_expires_at"
     t.datetime "reset_password_email_sent_at"
+    t.bigint "referred_user_id"
+    t.boolean "enable_referred", default: false
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["referred_user_id"], name: "index_users_on_referred_user_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token"
   end
 
@@ -220,4 +224,5 @@ ActiveRecord::Schema.define(version: 2020_01_15_123033) do
   add_foreign_key "sales", "countries"
   add_foreign_key "sales", "people"
   add_foreign_key "settings", "countries"
+  add_foreign_key "users", "users", column: "referred_user_id"
 end
