@@ -208,7 +208,7 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:email, :profile_type, :password, :password_confirmation, :referred_user_id)
+    params.require(:user).permit(:email, :profile_type, :password, :password_confirmation, :referred_user_id, :enable_referred)
   end
 
   def user_update_params
