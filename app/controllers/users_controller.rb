@@ -19,6 +19,10 @@ class UsersController < ApplicationController
 
   def create
     user = User.new(user_params)
+    if params[:user][:referred_user_id].present?
+      referred_user = User.find_by_hashid(params[:user][:referred_user_id])
+      user.referred_user = referred_user
+    end
     case user.profile_type
     when "Person"
       profile = Person.new(person_params)
@@ -208,7 +212,7 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:email, :profile_type, :password, :password_confirmation, :referred_user_id, :enable_referred)
+    params.require(:user).permit(:email, :profile_type, :password, :password_confirmation, :enable_referred)
   end
 
   def user_update_params
