@@ -1,8 +1,6 @@
 class MyUserSerializer < ApplicationSerializer
   attributes :email, :profile_type, :profile, :state, :enable_referred, :referred_person
 
-  # has_one :referred_user, each_serializer: MyUserSerializer
-
   def referred_person
     object.referred_user&.profile
   end
