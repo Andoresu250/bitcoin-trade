@@ -10,6 +10,7 @@ class User < ApplicationRecord
 
     belongs_to :profile, polymorphic: true, optional: true, dependent: :destroy
     belongs_to :referred_user, class_name: "User", optional: true
+    has_many :referrals, foreign_key: :referred_user_id, class_name: "User"
 
     attr_accessor :password, :password_confirmation, :token
 
@@ -23,6 +24,9 @@ class User < ApplicationRecord
 
     scope :by_admins,       -> (foo = {}) { where("users.profile_type = 'Admin'") }
     scope :by_not_admins,   -> (foo = {}) { where("users.profile_type != 'Admin'") }
+
+    scope :by_referred_user_id, -> (id) { where(referred_user_id: id) }
+    scope :with_referred_user, -> { where.not(referred_user_id: nil) }
 
     validates :profile, presence: true, on: :deep_create
     validates :email, presence: true
@@ -54,7 +58,8 @@ class User < ApplicationRecord
             :by_created_end_date,
             :by_created_date,
             :by_admins,
-            :by_not_admins
+            :by_not_admins,
+            :by_referred_user_id
         ]
     end
 
