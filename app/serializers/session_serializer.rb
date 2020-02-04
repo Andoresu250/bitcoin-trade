@@ -1,5 +1,5 @@
 class SessionSerializer < ApplicationSerializer
-  attributes :email, :profile_type, :profile, :state, :enable_referred, :referred_person
+  attributes :email, :profile_type, :profile, :state, :token, :enable_referred, :referred_person
 
   def referred_person
     object.referred_user&.profile
