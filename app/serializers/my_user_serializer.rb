@@ -1,5 +1,11 @@
 class MyUserSerializer < ApplicationSerializer
-  attributes :email, :profile_type, :token, :profile, :state
+  attributes :email, :profile_type, :profile, :token, :state, :enable_referred, :referred_person
+
+  def referred_person
+    object.referred_user&.profile
+  end
+
+
 
   def profile
     case object.profile_type

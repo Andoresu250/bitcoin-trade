@@ -17,7 +17,7 @@ class DocumentType < ApplicationRecord
   end
 
   def self.filters
-    []
+    [:by_country_id]
   end
 
 end

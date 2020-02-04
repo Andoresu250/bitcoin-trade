@@ -21,7 +21,7 @@ Country.create!(
 
 Country.create!(
     name: "Peru", code: "51", locale: "es-PE", time_zone: "Lima",
-    money_code: "EUR", symbol: "S/.",
+    money_code: "SOL", symbol: "S/.",
     document_types_attributes: [
       { name: "DNI", abbreviation: "DNI" },
       { name: "Pasaporte", abbreviation: "PAS" }
