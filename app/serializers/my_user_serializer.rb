@@ -1,6 +1,6 @@
 class MyUserSerializer < ApplicationSerializer
-  attributes :email, :profile_type, :profile, :state
-  
+  attributes :email, :profile_type, :token, :profile, :state
+
   def profile
     case object.profile_type
     when "Admin"
