@@ -26,7 +26,9 @@ class Person < ApplicationRecord
 
   def self.filters
     [
-      :by_name
+      :by_name,
+      :by_identification,
+      :by_phone
     ]
   end
 
