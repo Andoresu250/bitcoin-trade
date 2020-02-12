@@ -9,7 +9,7 @@ class UsersController < ApplicationController
   before_action :set_user_by_restore_token, only: [:restore_password, :check_reset_password_token]
 
   def index
-    users = User.filter(params)
+    users = User.super_filter(params)
     return renderCollection("users", users, MyUserSerializer)
   end
 

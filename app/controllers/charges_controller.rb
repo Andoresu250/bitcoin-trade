@@ -1,5 +1,5 @@
 class ChargesController < ApplicationController
-  
+
   include ActionView::Helpers::NumberHelper
 
   before_action :verify_token
@@ -8,14 +8,14 @@ class ChargesController < ApplicationController
   before_action :is_admin?, only: [:approve, :deny]
 
   def index
-    charges = @user.is_person? ? @user.profile.charges.filter(params) : Charge.filter(params)
+    charges = @user.is_person? ? @user.profile.charges.super_filter(params) : Charge.super_filter(params)
     return renderCollection("charges", charges, ChargeSerializer, ['person.document_type', 'country', 'charge_point'])
   end
-  
+
   def show
     return render json: @charge, status: :ok, include: ['person.document_type', 'country', 'charge_point']
   end
-  
+
   def create
     return renderJson(:unauthorized) unless @user.profile_type == "Person"
     charge = Charge.new(charge_params)
@@ -33,7 +33,7 @@ class ChargesController < ApplicationController
       return renderJson(:unprocessable, {error: charge.errors.messages})
     end
   end
-  
+
   def approve
     if @charge.may_approve?
       @charge.approve
@@ -56,11 +56,11 @@ class ChargesController < ApplicationController
           puts @charge.errors.full_messages
         end
       end
-      
+
     end
     return renderJson(:unprocessable, {error: 'La recarga no se pudo aprobar'})
   end
-  
+
   def deny
     if @charge.may_deny?
       @charge.deny!
@@ -80,11 +80,11 @@ class ChargesController < ApplicationController
     def set_charge
       return renderJson(:not_found) unless @charge = Charge.find_by_hashid(params[:id])
     end
-    
+
     def charge_params
       params.require(:charge).permit(:amount, :evidence, :charge_point_id)
     end
-    
+
     def verify_user
       return renderJson(:unauthorized) if not ((@user.profile_type == "Person" && @user.profile_id == @charge.person_id) || (@user.is_admin?))
     end

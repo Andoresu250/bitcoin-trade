@@ -4,14 +4,14 @@ class BlogsController < ApplicationController
   before_action :set_blog, only: [:show, :update, :destroy]
 
   def index
-    blogs = Blog.filter(params)
+    blogs = Blog.super_filter(params)
     return renderCollection("blogs", blogs, BlogSerializer)
   end
-  
+
   def show
     return render json: @blog, status: :ok
   end
-  
+
   def create
     blog = Blog.new(blog_params)
     blog.user = @user
@@ -21,7 +21,7 @@ class BlogsController < ApplicationController
       return renderJson(:unprocessable, {error: blog.errors.messages})
     end
   end
-  
+
   def update
     @blog.assign_attributes(blog_params)
     @blog.user = @user
@@ -31,18 +31,18 @@ class BlogsController < ApplicationController
       return renderJson(:unprocessable, {error: @blog.errors.messages})
     end
   end
-  
+
   def destroy
     @blog.destroy
     return renderJson(:no_content)
   end
 
   private
-    
+
     def set_blog
       return renderJson(:not_found) unless @blog = Blog.find_by_hashid(params[:id])
     end
-    
+
     def blog_params
       params.require(:blog).permit(:title, :body, :image)
     end

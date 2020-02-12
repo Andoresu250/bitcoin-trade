@@ -5,7 +5,7 @@ class ReferralsController < ApplicationController
 
   def index
     params[:by_referred_user_id] = @user.id if @user.is_person?
-    users = User.with_referred_user.filter(params)
+    users = User.with_referred_user.super_filter(params)
     renderCollection("users", users, MyUserSerializer)
   end
 

@@ -14,6 +14,10 @@ class Purchase < ApplicationRecord
   scope :by_created_end_date,   -> (date) { where("purchases.created_at <= ?", date) }
   scope :by_created_date,       -> (date) { parse_date = DateTime.parse(date); where(purchases: {created_at: parse_date.midnight..parse_date.end_of_day})}
   scope :by_month,              -> (date=DateTime.now.to_s) {by_created_date(date)}
+  scope :by_person_name, -> (name) { joins(:person).where("LOWER(CONCAT(people.first_names, ' ', people.last_names)) @@ to_tsquery(?)", name.squeeze(" ").split(" ").join(" & ").downcase) }
+  scope :by_name, -> (name) { joins(:person).where("LOWER(CONCAT(people.first_names, ' ', people.last_names)) @@ to_tsquery(?)", name.squeeze(" ").split(" ").join(" & ").downcase) }
+  scope :by_identification, -> (identification) { joins(:person).where("people.identification LIKE ?", "%#{identification}%") }
+  scope :by_phone, -> (phone) { joins(:person).where("people.phone LIKE ?", "%#{phone}%") }
 
   validates :value, :btc, :wallet_url, presence: true
   # validates :evidence, presence: true, on: :approve
@@ -22,7 +26,11 @@ class Purchase < ApplicationRecord
 
   def self.filters
     [
-      :by_state
+      :by_state,
+      :by_person_name,
+      :by_name,
+      :by_identification,
+      :by_phone
     ]
   end
 

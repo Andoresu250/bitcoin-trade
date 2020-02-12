@@ -2,7 +2,7 @@ class ContactsController < ApplicationController
   # before_action :set_contact, only: [:show, :edit, :update, :destroy]
 
   def index
-    contacts = Contact.filter(params)
+    contacts = Contact.super_filter(params)
     return renderCollection("contacts", contacts, ContactSerializer)
   end
 
@@ -12,7 +12,7 @@ class ContactsController < ApplicationController
     Contact.create(contacts_params)
     return renderJson(:ok)
     # contacts_params.each do |contact_hash|
-      
+
     #   puts contact_hash.permit(:name, :phone)
     # end
   end

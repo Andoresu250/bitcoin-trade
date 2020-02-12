@@ -1,5 +1,5 @@
 class BtcChargesController < ApplicationController
-  
+
   include ActionView::Helpers::NumberHelper
 
   before_action :verify_token
@@ -8,14 +8,14 @@ class BtcChargesController < ApplicationController
   before_action :is_admin?, only: [:approve, :deny, :successful]
 
   def index
-    charges = @user.is_person? ? @user.profile.btc_charges.filter(params) : BtcCharge.filter(params)
+    charges = @user.is_person? ? @user.profile.btc_charges.super_filter(params) : BtcCharge.super_filter(params)
     return renderCollection("charges", charges, BtcChargeSerializer, ['person.document_type', 'country'])
   end
-  
+
   def show
     return render json: @charge, status: :ok, include: ['person.document_type', 'country']
   end
-  
+
   def create
     return renderJson(:unauthorized) unless @user.profile_type == "Person"
     charge = BtcCharge.new(charge_params)
@@ -33,14 +33,14 @@ class BtcChargesController < ApplicationController
       return renderJson(:unprocessable, {error: charge.errors.messages})
     end
   end
-  
+
   def approve
     if @charge.may_approve?
       @charge.assign_attributes(charge_params)
       @charge.approve
       person = @charge.person
-      user = person.user      
-      if @charge.valid?(:approve)        
+      user = person.user
+      if @charge.valid?(:approve)
         @charge.save
         money = number_to_currency(@charge.btc, unit: "Ƀ", precision: nil)
         msg = "Hola #{user.full_name}, gracias por confiar en nosotros tu recarga por #{money} ha sido aprobada exitosamente, usa este codigo QR para realizar la transferencia"
@@ -49,7 +49,7 @@ class BtcChargesController < ApplicationController
         # return renderJson(:created, { notice: 'La recarga fue aprobada exitosamente' })
         return render json: @charge, status: :ok, include: ['person.document_type', 'country']
       else
-        unless @charge.valid?(:approve) 
+        unless @charge.valid?(:approve)
           puts @charge.errors.full_messages
           return renderJson(:unprocessable, {error: @charge.errors.messages})
         end
@@ -64,8 +64,8 @@ class BtcChargesController < ApplicationController
       @charge.assign_attributes(charge_params)
       @charge.check
       person = @charge.person
-      user = person.user      
-      if @charge.valid?(:check)        
+      user = person.user
+      if @charge.valid?(:check)
         @charge.save
         money = number_to_currency(@charge.btc, unit: "Ƀ", precision: nil)
         msg = "Hola #{user.full_name}, gracias por confiar en nosotros tu recarga por #{money} ha sido aprobada exitosamente, usa este codigo QR para realizar la transferencia"
@@ -76,20 +76,20 @@ class BtcChargesController < ApplicationController
         unless @charge.valid?(:check)
           puts @charge.errors.full_messages
           return renderJson(:unprocessable, {error: @charge.errors.messages})
-        end        
+        end
       end
-      
+
     end
     return renderJson(:unprocessable, {error: 'La recarga no se pudo validar'})
   end
 
   def successful
-    if @charge.may_successful?      
+    if @charge.may_successful?
       @charge.successful
       person = @charge.person
       person.btc += @charge.btc
-      user = person.user      
-      if person.valid? && @charge.valid?(:successful)        
+      user = person.user
+      if person.valid? && @charge.valid?(:successful)
         @charge.save
         person.save
         money = number_to_currency(@charge.btc, unit: "Ƀ", precision: nil)
@@ -99,16 +99,16 @@ class BtcChargesController < ApplicationController
         # return renderJson(:created, { notice: 'La recarga fue aprobada exitosamente' })
         return render json: @charge, status: :ok, include: ['person.document_type', 'country']
       else
-        unless @charge.valid?(:successful)  
+        unless @charge.valid?(:successful)
           puts @charge.errors.full_messages
           return renderJson(:unprocessable, {error: @charge.errors.messages})
-        end        
+        end
       end
-      
+
     end
     return renderJson(:unprocessable, {error: 'La recarga no se pudo aprobar'})
   end
-  
+
   def deny
     if @charge.may_deny?
       @charge.deny!
@@ -128,11 +128,11 @@ class BtcChargesController < ApplicationController
     def set_charge
       return renderJson(:not_found) unless @charge = BtcCharge.find_by_hashid(params[:id])
     end
-    
+
     def charge_params
       params.require(:charge).permit(:btc, :evidence, :qr)
     end
-    
+
     def verify_user
       return renderJson(:unauthorized) if not ((@user.profile_type == "Person" && @user.profile_id == @charge.person_id) || (@user.is_admin?))
     end

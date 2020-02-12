@@ -1,24 +1,24 @@
 class PurchasesController < ApplicationController
 
     include ActionView::Helpers::NumberHelper
-  
+
     before_action :verify_token
     before_action :set_purchase, only: [:show, :destroy, :approve, :deny]
     before_action :verify_user, only: [:show, :destroy]
     before_action :is_admin?, only: [:approve, :deny]
-  
+
     def index
-      purchases = @user.is_person? ? @user.profile.purchases.filter(params) : Purchase.filter(params)
+      purchases = @user.is_person? ? @user.profile.purchases.super_filter(params) : Purchase.super_filter(params)
       return renderCollection("purchases", purchases, PurchaseSerializer, ['person.document_type', 'country'])
     end
-    
+
     def show
       return render json: @purchase, status: :ok, include: ['person.document_type', 'country']
     end
-  
+
     def create
       return renderJson(:unauthorized) unless @user.profile_type == "Person"
-      purchase = Purchase.new(purchase_params)    
+      purchase = Purchase.new(purchase_params)
       purchase.btc = btc_value
       person = @user.profile
       purchase.person = person
@@ -43,13 +43,13 @@ class PurchasesController < ApplicationController
         return renderJson(:unprocessable, {error: purchase.errors.messages})
       end
     end
-  
+
     def approve
       if @purchase.may_approve?
         @purchase.approve
         @purchase.assign_attributes(purchase_params)
         if @purchase.save(context: :approve)
-          user = @purchase.person.user      
+          user = @purchase.person.user
           money = number_to_currency(@purchase.value, unit: @purchase.country.unit)
           msg = "Hola #{user.full_name}, gracias por confiar en nosotros tu compra de Ƀ#{@purchase.btc} por valor #{money} de ha sido aprobada exitosamente, revisa tu billetera y valida que todo este en orden."
           sbj = "Compra exitosa"
@@ -60,7 +60,7 @@ class PurchasesController < ApplicationController
       end
       return renderJson(:unprocessable, {error: 'La compra no se pudo aprobar'})
     end
-  
+
     def deny
       if @purchase.may_deny?
         @purchase.deny
@@ -72,27 +72,26 @@ class PurchasesController < ApplicationController
         sbj = "Compra fallida"
         if person.valid? && @purchase.valid?
             person.save
-            @purchase.save            
+            @purchase.save
             NotificationMailer.simple_notification(user, msg, sbj).deliver
             return renderJson(:created, { notice: 'La compra fue rechazada exitosamente' })
         end
       end
       return renderJson(:unprocessable, {error: 'La compra no se pudo rechazar'})
     end
-  
+
     private
-  
+
       def set_purchase
         return renderJson(:not_found) unless @purchase = Purchase.find_by_hashid(params[:id])
       end
-  
-  
+
+
       def purchase_params
         params.require(:purchase).permit(:wallet_url, :evidence)
       end
-      
+
       def btc_value
         params.require(:purchase).permit(:value)[:value]
       end
   end
-    
