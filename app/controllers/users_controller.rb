@@ -10,7 +10,7 @@ class UsersController < ApplicationController
 
   def index
     users = User.super_filter(params)
-    return renderCollection("users", users, MyUserSerializer)
+    return renderCollection("users", users, MyUserSerializer) 
   end
 
   def show
