@@ -49,7 +49,7 @@ class BtcCharge < ApplicationRecord
         end
 
         event :deny do
-            transitions  from: [:pendiente, :aceptado], to: :denegado
+            transitions  from: [:pendiente, :aceptado, :validando], to: :denegado
         end
 
         event :check do
